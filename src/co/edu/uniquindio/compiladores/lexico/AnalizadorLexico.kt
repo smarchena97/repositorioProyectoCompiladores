@@ -71,6 +71,8 @@ class AnalizadorLexico (var codigoFuente:String) {
             if(esPunto()) continue
             if(esDosPuntos()) continue
             if(esSeparador()) continue
+            if(esClase()) continue
+            if(esMetodo()) continue
 
             almacenarToken(""+caracterActual, Categoria.DESCONOCIDO, filaActual, columnaActual)
             obtenerSiguienteCaracter()
@@ -1045,18 +1047,7 @@ class AnalizadorLexico (var codigoFuente:String) {
             var columnaInicial = columnaActual
             lexema += caracterActual
             obtenerSiguienteCaracter()
-
-            while (caracterActual== '<' ){
-
-                lexema += caracterActual
-                obtenerSiguienteCaracter()
-            }
-            if (lexema == "<") {
-                almacenarToken(lexema, Categoria.LLAVE_IZQ, filaInicial, columnaInicial)
-            }
-            else {
-                almacenarToken(lexema, Categoria.DESCONOCIDO, filaInicial, columnaInicial)
-            }
+            almacenarToken(lexema, Categoria.LLAVE_IZQ, filaInicial, columnaInicial)
             return true
         }
         return false
@@ -1071,19 +1062,7 @@ class AnalizadorLexico (var codigoFuente:String) {
             var columnaInicial = columnaActual
             lexema += caracterActual
             obtenerSiguienteCaracter()
-
-            while (caracterActual== '>' ){
-
-                lexema += caracterActual
-                obtenerSiguienteCaracter()
-            }
-
-            if (lexema == ">") {
-                almacenarToken(lexema, Categoria.LLAVE_DER, filaInicial, columnaInicial)
-            }
-            else {
-                almacenarToken(lexema, Categoria.DESCONOCIDO, filaInicial, columnaInicial)
-            }
+            almacenarToken(lexema, Categoria.LLAVE_DER, filaInicial, columnaInicial)
             return true
         }
         return false
@@ -1098,18 +1077,7 @@ class AnalizadorLexico (var codigoFuente:String) {
             var columnaInicial = columnaActual
             lexema += caracterActual
             obtenerSiguienteCaracter()
-
-            while (caracterActual== '('){
-
-                lexema += caracterActual
-                obtenerSiguienteCaracter()
-            }
-            if (lexema == "(") {
-                almacenarToken(lexema, Categoria.PARENTESIS_IZQ, filaInicial, columnaInicial)
-            }
-            else {
-                almacenarToken(lexema, Categoria.DESCONOCIDO, filaInicial, columnaInicial)
-            }
+            almacenarToken(lexema, Categoria.PARENTESIS_IZQ, filaInicial, columnaInicial)
             return true
         }
         return false
@@ -1124,19 +1092,7 @@ class AnalizadorLexico (var codigoFuente:String) {
             var columnaInicial = columnaActual
             lexema += caracterActual
             obtenerSiguienteCaracter()
-
-            while (caracterActual== ')'){
-
-                lexema += caracterActual
-                obtenerSiguienteCaracter()
-            }
-
-            if (lexema == ")") {
-                almacenarToken(lexema, Categoria.PARENTESIS_DER, filaInicial, columnaInicial)
-            }
-            else {
-                almacenarToken(lexema, Categoria.DESCONOCIDO, filaInicial, columnaInicial)
-            }
+            almacenarToken(lexema, Categoria.PARENTESIS_DER, filaInicial, columnaInicial)
             return true
         }
         return false
@@ -1151,18 +1107,7 @@ class AnalizadorLexico (var codigoFuente:String) {
             var columnaInicial = columnaActual
             lexema += caracterActual
             obtenerSiguienteCaracter()
-
-            while (caracterActual== '[' ){
-
-                lexema += caracterActual
-                obtenerSiguienteCaracter()
-            }
-            if (lexema == "[") {
-                almacenarToken(lexema, Categoria.CORCHETE_IZQ, filaInicial, columnaInicial)
-            }
-            else {
-                almacenarToken(lexema, Categoria.DESCONOCIDO, filaInicial, columnaInicial)
-            }
+            almacenarToken(lexema, Categoria.CORCHETE_IZQ, filaInicial, columnaInicial)
             return true
         }
         return false
@@ -1177,18 +1122,7 @@ class AnalizadorLexico (var codigoFuente:String) {
             var columnaInicial = columnaActual
             lexema += caracterActual
             obtenerSiguienteCaracter()
-
-            while (caracterActual== ']' ){
-
-                lexema += caracterActual
-                obtenerSiguienteCaracter()
-            }
-            if (lexema == "]") {
-                almacenarToken(lexema, Categoria.CORCHETE_DER, filaInicial, columnaInicial)
-            }
-            else {
-                almacenarToken(lexema, Categoria.DESCONOCIDO, filaInicial, columnaInicial)
-            }
+            almacenarToken(lexema, Categoria.CORCHETE_DER, filaInicial, columnaInicial)
             return true
         }
         return false
@@ -1203,19 +1137,7 @@ class AnalizadorLexico (var codigoFuente:String) {
             var columnaInicial = columnaActual
             lexema += caracterActual
             obtenerSiguienteCaracter()
-
-            while (caracterActual== '.' ){
-
-                lexema += caracterActual
-                obtenerSiguienteCaracter()
-            }
-
-            if (lexema == ".") {
-                almacenarToken(lexema, Categoria.FINDESENTENCIA, filaInicial, columnaInicial)
-            }
-            else {
-                almacenarToken(lexema, Categoria.DESCONOCIDO, filaInicial, columnaInicial)
-            }
+            almacenarToken(lexema, Categoria.FINDESENTENCIA, filaInicial, columnaInicial)
             return true
         }
         return false
@@ -1223,26 +1145,14 @@ class AnalizadorLexico (var codigoFuente:String) {
 
     fun esPunto():Boolean{
 
-        if(caracterActual== '$' ){
+        if(caracterActual== '°' ){
 
             var lexema = ""
             var filaInicial = filaActual
             var columnaInicial = columnaActual
             lexema += caracterActual
             obtenerSiguienteCaracter()
-
-            while (caracterActual== '$' ){
-
-                lexema += caracterActual
-                obtenerSiguienteCaracter()
-            }
-
-            if (lexema == "$") {
-                almacenarToken(lexema, Categoria.PUNTO, filaInicial, columnaInicial)
-            }
-            else {
-                almacenarToken(lexema, Categoria.DESCONOCIDO, filaInicial, columnaInicial)
-            }
+            almacenarToken(lexema, Categoria.PUNTO, filaInicial, columnaInicial)
             return true
         }
         return false
@@ -1257,44 +1167,105 @@ class AnalizadorLexico (var codigoFuente:String) {
             var columnaInicial = columnaActual
             lexema += caracterActual
             obtenerSiguienteCaracter()
-
-            while (caracterActual == '=') {
-                lexema += caracterActual
-                obtenerSiguienteCaracter()
-            }
-
-            if (lexema == "=") {
-                almacenarToken(lexema, Categoria.DOSPUNTOS, filaInicial, columnaInicial)
-            }
-            else {
-                almacenarToken(lexema, Categoria.DESCONOCIDO, filaInicial, columnaInicial)
-            }
+            almacenarToken(lexema, Categoria.DOSPUNTOS, filaInicial, columnaInicial)
             return true
         }
         return false
     }
 
     fun esSeparador():Boolean{
-
         if(caracterActual== ',' ) {
             var lexema = ""
             var filaInicial = filaActual
             var columnaInicial = columnaActual
-
-            while(caracterActual== ',' ) {
-                lexema += caracterActual
-                obtenerSiguienteCaracter()
-            }
-
-            if (lexema == ",") {
-                almacenarToken(lexema, Categoria.COMA, filaInicial, columnaInicial)
-            }
-            else {
-                almacenarToken(lexema, Categoria.DESCONOCIDO, filaInicial, columnaInicial)
-            }
+            lexema += caracterActual
+            obtenerSiguienteCaracter()
+            almacenarToken(lexema, Categoria.COMA, filaInicial, columnaInicial)
             return true
         }
 
+        return false
+    }
+
+    fun esMetodo():Boolean{
+
+        if(caracterActual=='$') {
+            var lexema = ""
+            var filaInicial = filaActual
+            var columnaInicial = columnaActual
+            var posicionInicial = posicionActual
+
+            var control=10
+            lexema += caracterActual
+
+            obtenerSiguienteCaracter()
+            if (caracterActual.isLetter()) {
+                control -= 1
+                lexema += caracterActual
+                obtenerSiguienteCaracter()
+
+                if (caracterActual.isLetter() || caracterActual.isDigit() || caracterActual == '_') {
+                    control -= 1
+                    while (caracterActual.isLetter() || caracterActual.isDigit() || caracterActual == '_') {
+                        control -= 1
+                        if (control>=0) {
+                            lexema += caracterActual
+                            obtenerSiguienteCaracter()
+                        }
+                        else {
+                            hacerBT(posicionInicial, filaInicial, columnaInicial)
+                            return false
+                        }
+                    }
+                    almacenarToken(lexema, Categoria.METODO, filaInicial, columnaInicial)
+                    return true
+                }
+                almacenarToken(lexema, Categoria.METODO, filaInicial, columnaInicial)
+            }
+            else {
+                hacerBT(posicionInicial, filaInicial, columnaInicial)
+                return false
+            }
+            almacenarToken(lexema, Categoria.METODO, filaInicial, columnaInicial)
+            return true
+        }
+        return false
+    }
+
+
+    fun esClase():Boolean{
+
+        if(caracterActual.isUpperCase()) {
+            var lexema = ""
+            var filaInicial = filaActual
+            var columnaInicial = columnaActual
+            var posicionInicial = posicionActual
+
+            var control = 10
+            lexema += caracterActual
+
+            obtenerSiguienteCaracter()
+            if (caracterActual.isLetter() || caracterActual.isDigit() ) {
+                control -= 1
+                lexema += caracterActual
+                obtenerSiguienteCaracter()
+                control -= 1
+                while (caracterActual.isLetter() || caracterActual.isDigit()) {
+                    control -= 1
+                    if (control >= 0) {
+                        lexema += caracterActual
+                        obtenerSiguienteCaracter()
+                    } else {
+                        hacerBT(posicionInicial, filaInicial, columnaInicial)
+                        return false
+                    }
+                }
+                almacenarToken(lexema, Categoria.CLASE, filaInicial, columnaInicial)
+                return true
+            }
+            almacenarToken(lexema, Categoria.CLASE, filaInicial, columnaInicial)
+            return true
+        }
         return false
     }
 }
