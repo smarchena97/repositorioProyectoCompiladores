@@ -3,7 +3,7 @@ package co.edu.uniquindio.compiladores.prueba
 import co.edu.uniquindio.compiladores.lexico.AnalizadorLexico
 
 fun main(){
-    val lexico = AnalizadorLexico("a7732637482 casa #887799NZ #44444NR ")
+    val lexico = AnalizadorLexico("a7732637482a :: : : 4444NR #/aaaaa,aaaa/# casa #887799NZ !!cs¡¡ ")
     lexico.analizar()
     print(lexico.listaTokens)
 }
