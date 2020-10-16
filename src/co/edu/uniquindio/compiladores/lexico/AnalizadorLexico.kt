@@ -206,6 +206,11 @@ class AnalizadorLexico (var codigoFuente:String) {
                 i += 1
             }
 
+            if(esPalabraReservada(lexema)){
+                hacerBT(posicionInicial, filaInicial, columnaInicial)
+                return false
+            }
+
             if(i <= 10){
                 almacenarToken(lexema, Categoria.IDENTIFICADOR, filaInicial, columnaInicial)
                 return true
@@ -227,6 +232,12 @@ class AnalizadorLexico (var codigoFuente:String) {
             var posicionInicial = posicionActual
             lexema += caracterActual
             obtenerSiguienteCaracter()
+
+            if(caracterActual == ':'){
+                hacerBT(posicionInicial, filaInicial, columnaInicial)
+                return false
+            }
+
             almacenarToken(lexema, Categoria.OPERADOR_ARITMETICO, filaInicial, columnaInicial)
             return true
         }
@@ -255,7 +266,7 @@ class AnalizadorLexico (var codigoFuente:String) {
                 var posicionInicial = posicionActual
                 lexema += caracterActual
                 obtenerSiguienteCaracter()
-                if(caracterActual == '='){
+                if(caracterActual == ':'){
                     lexema += caracterActual
                     obtenerSiguienteCaracter()
                     almacenarToken(lexema, Categoria.OPERADOR_ASIGNACION, filaInicial, columnaInicial)
@@ -315,7 +326,7 @@ class AnalizadorLexico (var codigoFuente:String) {
             var posicionInicial = posicionActual
             lexema += caracterActual
             obtenerSiguienteCaracter()
-            if(caracterActual == '='){
+            if(caracterActual == ':'){
                 lexema += caracterActual
                 obtenerSiguienteCaracter()
             }
@@ -382,6 +393,17 @@ class AnalizadorLexico (var codigoFuente:String) {
                     return true
                 }
             }
+        }
+        return false
+    }
+
+    fun esPalabraReservada(lexema:String):Boolean{
+        var i = 0
+        while ( i <= listaPalabrasReservadas.size-1){
+            if(lexema.contains(listaPalabrasReservadas[i],ignoreCase = true)){
+                return true
+            }
+            i += 1
         }
         return false
     }
