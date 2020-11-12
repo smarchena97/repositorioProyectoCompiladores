@@ -10,6 +10,18 @@ class AnalizadorLexico (var codigoFuente:String) {
     var columnaActual = 0
     val listaPalabrasReservadas = ArrayList<String>()
 
+    init{listaPalabrasReservadas.add("numZ")
+        listaPalabrasReservadas.add("numR")
+        listaPalabrasReservadas.add("chordi")
+        listaPalabrasReservadas.add("khar")
+        listaPalabrasReservadas.add("per")
+        listaPalabrasReservadas.add("mentre")
+        listaPalabrasReservadas.add("se")
+        listaPalabrasReservadas.add("altro")
+        listaPalabrasReservadas.add("scambio")
+        listaPalabrasReservadas.add("caso")
+        listaPalabrasReservadas.add("principale")}
+
     fun almacenarToken(lexema:String, categoria: Categoria, fila:Int, columna:Int) = listaTokens.add( Token(lexema, categoria, fila, columna)  )
 
 
@@ -25,17 +37,7 @@ class AnalizadorLexico (var codigoFuente:String) {
 
     fun analizar(){
 
-        listaPalabrasReservadas.add("numZ")
-        listaPalabrasReservadas.add("numR")
-        listaPalabrasReservadas.add("chordi")
-        listaPalabrasReservadas.add("khar")
-        listaPalabrasReservadas.add("per")
-        listaPalabrasReservadas.add("mentre")
-        listaPalabrasReservadas.add("se")
-        listaPalabrasReservadas.add("altro")
-        listaPalabrasReservadas.add("scambio")
-        listaPalabrasReservadas.add("caso")
-        listaPalabrasReservadas.add("principale")
+
 
         while (caracterActual != finCodigo){
 
@@ -206,9 +208,10 @@ class AnalizadorLexico (var codigoFuente:String) {
                 i += 1
             }
 
-            if(esPalabraReservada(lexema)){
-                hacerBT(posicionInicial, filaInicial, columnaInicial)
-                return false
+            if(esPalabraReservada2(lexema)){
+                //hacerBT(posicionInicial, filaInicial, columnaInicial)
+                almacenarToken(lexema, Categoria.PALABRA_RESERVADA, filaInicial, columnaInicial)
+                return true
             }
 
             if(i <= 10){
@@ -220,6 +223,25 @@ class AnalizadorLexico (var codigoFuente:String) {
             }
 
         }
+        return false
+    }
+
+     fun esPalabraReservada2(lexema: String):Boolean{
+
+        var i = 0
+         var filaInicial = filaActual
+         var columnaInicial = columnaActual
+         var posicionInicial = posicionActual
+
+        while (i < listaPalabrasReservadas.size){
+
+            if(listaPalabrasReservadas[i].equals(lexema)){
+                return true
+            }
+            i ++
+
+        }
+
         return false
     }
 
@@ -721,119 +743,7 @@ class AnalizadorLexico (var codigoFuente:String) {
         return false
     }
 
-    fun buclePer():Boolean{
 
-        if(caracterActual == 'p' ){
-
-            var lexema = ""
-            var filaInicial = filaActual
-            var columnaInicial = columnaActual
-            var posicionInicial = posicionActual
-            lexema += caracterActual
-            obtenerSiguienteCaracter()
-
-            if(caracterActual == 'e'){
-
-                lexema += caracterActual
-                obtenerSiguienteCaracter()
-
-                if(caracterActual == 'r'){
-
-                    lexema += caracterActual
-                    obtenerSiguienteCaracter()
-                    almacenarToken(lexema, Categoria.BUCLE, filaInicial, columnaInicial)
-                    return true
-
-                }
-
-            }
-
-            hacerBT(posicionInicial, filaInicial, columnaInicial)
-
-        }
-        return false
-    }
-
-    fun bucleMentre():Boolean{
-
-        if(caracterActual == 'm'){
-
-            var lexema = ""
-            var filaInicial = filaActual
-            var columnaInicial = columnaActual
-            var posicionInicial = posicionActual
-            lexema += caracterActual
-            obtenerSiguienteCaracter()
-
-            if(caracterActual == 'e'){
-
-                lexema += caracterActual
-                obtenerSiguienteCaracter()
-
-                if(caracterActual == 'n'){
-
-                    lexema += caracterActual
-                    obtenerSiguienteCaracter()
-
-                    if(caracterActual == 't'){
-
-                        lexema += caracterActual
-                        obtenerSiguienteCaracter()
-
-                        if(caracterActual == 'r'){
-
-                            lexema += caracterActual
-                            obtenerSiguienteCaracter()
-
-                            if(caracterActual == 'e'){
-
-                                lexema += caracterActual
-                                obtenerSiguienteCaracter()
-                                almacenarToken(lexema, Categoria.BUCLE, filaInicial, columnaInicial)
-                                return true
-
-                            }
-
-                        }
-
-                    }
-
-                }
-
-            }
-
-            hacerBT(posicionInicial, filaInicial, columnaInicial)
-
-        }
-
-        return false
-
-    }
-
-    fun decisionSe():Boolean{
-
-        if(caracterActual == 's'){
-
-            var lexema = ""
-            var filaInicial = filaActual
-            var columnaInicial = columnaActual
-            var posicionInicial = posicionActual
-            lexema += caracterActual
-            obtenerSiguienteCaracter()
-
-            if(caracterActual == 'e'){
-
-                lexema += caracterActual
-                obtenerSiguienteCaracter()
-                almacenarToken(lexema, Categoria.BUCLE, filaInicial, columnaInicial)
-                return true
-
-            }
-            hacerBT(posicionInicial, filaInicial, columnaInicial)
-        }
-
-        return false
-    }
 
     fun desicionAltro():Boolean{
 
@@ -942,120 +852,9 @@ class AnalizadorLexico (var codigoFuente:String) {
         return false
     }
 
-    fun desicionCaso():Boolean{
+    
 
-        if(caracterActual == 'c'){
 
-            var lexema = ""
-            var filaInicial = filaActual
-            var columnaInicial = columnaActual
-            var posicionInicial = posicionActual
-            lexema += caracterActual
-            obtenerSiguienteCaracter()
-
-            if(caracterActual == 'a'){
-
-                lexema += caracterActual
-                obtenerSiguienteCaracter()
-
-                if(caracterActual == 's'){
-
-                    lexema += caracterActual
-                    obtenerSiguienteCaracter()
-
-                    if (caracterActual == 'o'){
-
-                        lexema += caracterActual
-                        obtenerSiguienteCaracter()
-                        almacenarToken(lexema, Categoria.CONDICIONAL, filaInicial, columnaInicial)
-                        return true
-
-                    }
-
-                }
-
-            }
-            hacerBT(posicionInicial, filaInicial, columnaInicial)
-        }
-        return false
-    }
-
-    fun esPrincipal():Boolean{
-
-        if(caracterActual == 'p'){
-
-            var lexema = ""
-            var filaInicial = filaActual
-            var columnaInicial = columnaActual
-            var posicionInicial = posicionActual
-            lexema += caracterActual
-            obtenerSiguienteCaracter()
-
-            if(caracterActual == 'r'){
-
-                lexema += caracterActual
-                obtenerSiguienteCaracter()
-
-                if(caracterActual == 'i'){
-
-                    lexema += caracterActual
-                    obtenerSiguienteCaracter()
-
-                    if (caracterActual == 'n'){
-
-                        lexema += caracterActual
-                        obtenerSiguienteCaracter()
-
-                        if(caracterActual == 'c'){
-
-                            lexema += caracterActual
-                            obtenerSiguienteCaracter()
-
-                            if (caracterActual == 'i'){
-
-                                lexema += caracterActual
-                                obtenerSiguienteCaracter()
-
-                                if(caracterActual == 'p'){
-
-                                    lexema += caracterActual
-                                    obtenerSiguienteCaracter()
-
-                                    if(caracterActual == 'a'){
-
-                                        lexema += caracterActual
-                                        obtenerSiguienteCaracter()
-
-                                        if(caracterActual == 'l'){
-
-                                            lexema += caracterActual
-                                            obtenerSiguienteCaracter()
-
-                                            if(caracterActual == 'e'){
-                                                lexema += caracterActual
-                                                obtenerSiguienteCaracter()
-                                                almacenarToken(lexema, Categoria.PRINCIPAL, filaInicial, columnaInicial)
-                                                return true
-                                            }
-
-                                        }
-
-                                    }
-                                }
-
-                            }
-
-                        }
-
-                    }
-
-                }
-
-            }
-            hacerBT(posicionInicial, filaInicial, columnaInicial)
-        }
-        return false
-    }
 
     //---------------------------------------------------------------------------------------------------
 
