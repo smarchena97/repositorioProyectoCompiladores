@@ -41,8 +41,6 @@ class AnalizadorLexico (var codigoFuente:String) {
 
     fun analizar(){
 
-
-
         while (caracterActual != finCodigo){
 
             if(caracterActual == ' ' || caracterActual == '\t' || caracterActual == '\n'){
@@ -239,7 +237,7 @@ class AnalizadorLexico (var codigoFuente:String) {
 
         while (i < listaPalabrasReservadas.size){
 
-            if(listaPalabrasReservadas[i].equals(lexema)){
+            if(listaPalabrasReservadas[i] == lexema){
                 return true
             }
             i ++
@@ -460,7 +458,7 @@ class AnalizadorLexico (var codigoFuente:String) {
                         lexema+=caracterActual
                         obtenerSiguienteCaracter()
 
-                        almacenarToken(lexema, Categoria.PALABRA_RESERVADA_ENTERO, filaInicial, columnaInicial)
+                        almacenarToken(lexema, Categoria.PALABRA_RESERVADA, filaInicial, columnaInicial)
                         return true
                     }
                 }
@@ -495,7 +493,7 @@ class AnalizadorLexico (var codigoFuente:String) {
                         lexema+=caracterActual
                         obtenerSiguienteCaracter()
 
-                        almacenarToken(lexema, Categoria.PALABRA_RESERVADA_DECIMAL, filaInicial, columnaInicial)
+                        almacenarToken(lexema, Categoria.PALABRA_RESERVADA, filaInicial, columnaInicial)
                         return true
                     }
                 }
@@ -532,7 +530,7 @@ class AnalizadorLexico (var codigoFuente:String) {
                                 lexema += caracterActual
                                 obtenerSiguienteCaracter()
 
-                                almacenarToken(lexema, Categoria.PALABRA_RESERVADA_CADENA, filaInicial, columnaInicial)
+                                almacenarToken(lexema, Categoria.PALABRA_RESERVADA, filaInicial, columnaInicial)
                                 return true
                             }
                         }
@@ -566,7 +564,7 @@ class AnalizadorLexico (var codigoFuente:String) {
                         lexema += caracterActual
                         obtenerSiguienteCaracter()
 
-                        almacenarToken(lexema, Categoria.PALABRA_RESERVADA_CADENA, filaInicial, columnaInicial)
+                        almacenarToken(lexema, Categoria.PALABRA_RESERVADA, filaInicial, columnaInicial)
                         return true
                     }
                 }

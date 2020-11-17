@@ -8,5 +8,6 @@ fun main(){
     lexico.analizar()
     val sintaxis = AnalizadorSintactico(lexico.listaTokens)
     print(sintaxis.esUnidadDeCompilacion())
+    print(sintaxis.listaErrores)
 
 }

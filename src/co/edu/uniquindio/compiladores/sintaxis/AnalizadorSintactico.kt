@@ -23,7 +23,7 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
     }
 
     /**
-     * <UnidadDeCompilacion> ::=  <ListaFunciones>
+     * <UnidadDeCompilacion> ::= <ListaFunciones>
      */
     fun esUnidadDeCompilacion(): UnidadDeCompilacion? {
         val listaFunciones: ArrayList<Funcion> = esListaFunciones()
@@ -52,10 +52,10 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
     fun esFuncion():Funcion?{
 
         if(tokenActual.categoria == Categoria.PALABRA_RESERVADA && tokenActual.lexema == "fun"){
-
             obtenerSiguienteToken()
 
             var tipoRetorno = estipoRetorno()
+
             if(tipoRetorno != null){
                 obtenerSiguienteToken()
 
@@ -71,39 +71,31 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
                         if(tokenActual.categoria == Categoria.PARENTESIS_DER){
                             obtenerSiguienteToken()
 
-                            if(tokenActual.categoria == Categoria.LLAVE_IZQ){
-                                obtenerSiguienteToken()
-                                var listaSentencias = esListaSentencias()
-                                if( listaSentencias != null ){
-                                    obtenerSiguienteToken()
+                            var bloqueSentencias= esBloqueSentencias()
 
-                                    if(tokenActual.categoria == Categoria.LLAVE_DER){
-                                        return Funcion(nombreFuncion, tipoRetorno, listaParametros, listaSentencias)
-                                    }else{
-                                        reportarError("Falta llave derecha")
-                                    }
-
-                                }else{
-                                    reportarError("El bloque de sentencias está vacío")
-                                }
-                            }else{
-                                reportarError("Falta llave izquierda")
+                            if (bloqueSentencias != null){
+                                return Funcion(nombreFuncion, tipoRetorno, listaParametros, bloqueSentencias)
                             }
-                        }else{
+                            else{
+                                reportarError( "Faltó el bloque de sentencias en la función" )
+                            }
+                        }
+                        else{
                             reportarError("Falta parentesis derecho")
                         }
-                    }else{
+                    }
+                    else{
                         reportarError("Falta parentesis izquierdo")
                     }
-                }else{
+                }
+                else{
                     reportarError("Falta nombre del metodo")
                 }
-
-            }else{
+            }
+            else{
                 reportarError("Falta el tipo de retorno en el método")
             }
         }
-
         return null
     }
 
@@ -143,12 +135,13 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
         var parametro = esParametro()
         while (parametro != null){
             listaParametros.add(parametro)
+            obtenerSiguienteToken()
             if(tokenActual.categoria == Categoria.COMA){
                 obtenerSiguienteToken()
                 parametro = esParametro()
             }else{
-                if(tokenActual.categoria != Categoria.PARENTESIS_IZQ){
-                    reportarError("Falta una coma en la lista de parametros")
+                if(tokenActual.categoria != Categoria.PARENTESIS_DER){
+                    reportarError("Falta un parentisis derecho en la lista de parametros")
                 }
                 break
             }
@@ -162,8 +155,8 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
      */
     fun esParametro():Parametro?{
 
-        if(tokenActual.categoria == Categoria.PALABRA_RESERVADA){
-            if(tokenActual.lexema == "numZ" || tokenActual.lexema == "numR" || tokenActual.lexema == "chordi" || tokenActual.lexema == "khar" || tokenActual.lexema == "bool"){
+     //   if(tokenActual.categoria == Categoria.PALABRA_RESERVADA){
+       //     if(tokenActual.lexema == "numZ" || tokenActual.lexema == "numR" || tokenActual.lexema == "chordi" || tokenActual.lexema == "khar" || tokenActual.lexema == "bool"){
                 val tipoDato = estipoDato()
                 if(tipoDato!=null){
                     obtenerSiguienteToken()
@@ -172,12 +165,47 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
                         return Parametro(nombre,tipoDato)
                     }
                 }else{
-                    reportarError("Falta el tipo de error en el parametro")
+                    reportarError("Falta el tipo de retorno en el parametro")
                 }
 
+           // }
+       // }
+        return null
+    }
+
+    /**
+     * <BloqueSentencias> ::= "<" [<ListaSentencias>] ">"
+     */
+    fun esBloqueSentencias():ArrayList<Sentencia>?{
+        if (tokenActual.categoria == Categoria.LLAVE_IZQ) {
+            obtenerSiguienteToken()
+
+            var listaSentencias = esListaSentencias()
+
+            if (tokenActual.categoria == Categoria.LLAVE_DER) {
+                obtenerSiguienteToken()
+
+                return listaSentencias
+            }
+            else{
+                reportarError( "Falta llave derecha" )
             }
         }
+        else{
+            reportarError( "Falta llave izquierda" )
+        }
         return null
+    }
+
+    /**
+     * <ListaSentencias> ::= <Sentencia>[<ListaSentencias>]
+     */
+    fun esListaSentencias():ArrayList<Sentencia>?{
+        /**var listaSentencias = ArrayList<Sentencia>()
+        var sentencia =
+
+        while ()*/
+        return ArrayList()
     }
 
     /**
@@ -189,15 +217,6 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
 
     }
 
-    /**
-     * <ListaSentencias> ::= <Sentencia>[<ListaSentencias>]
-     */
-   fun esListaSentencias():ArrayList<Sentencia>?{
-        /**var listaSentencias = ArrayList<Sentencia>()
-        var sentencia =
 
-        while ()*/
-       return null
-    }
 
 }
