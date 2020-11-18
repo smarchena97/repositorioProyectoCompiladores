@@ -217,6 +217,86 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
 
     }
 
+    /**
+     * <DeclaracionVariables> ::= <TipoVariable><ListaIdentificadores> <TipoDato> “.”
+     */
+    fun esDeclaracionVariables():DeclaracionVariable?{
+        var listaIdentificadores = ArrayList<Token>()
+        if(tokenActual.categoria == Categoria.PALABRA_RESERVADA){
+            if(esTipoVariable() != null){
+                var tipoVariable = tokenActual
+                obtenerSiguienteToken()
+                if(tokenActual.categoria == Categoria.IDENTIFICADOR){
+                    while (tokenActual.categoria == Categoria.IDENTIFICADOR){
+                        var identi = tokenActual
+                        listaIdentificadores.add(identi)
+                        obtenerSiguienteToken()
+                    }
+                    if(estipoDato() != null){
+                        var tipoDato = tokenActual
+                        obtenerSiguienteToken()
+                        if(tokenActual.categoria == Categoria.FINDESENTENCIA){
+                            return DeclaracionVariable(tipoVariable,listaIdentificadores,tipoDato)
+                        }
+                    }else{
+                        reportarError("Falta especificar el tipo de Dato")
+                    }
+                }
 
+            }
+        }else{
+            reportarError("Falta el tipo de variable")
+        }
+        return null
+    }
+
+    /**
+     * <TipoVariable> ::= mut | inmut
+     */
+    fun esTipoVariable():Token?{
+        if(tokenActual.categoria == Categoria.PALABRA_RESERVADA){
+            if(tokenActual.lexema == "mut" || tokenActual.lexema == "inmut"){
+                return tokenActual
+            }
+        }
+        return null
+    }
+
+    /**
+     * <ListaIdentificadores> ::= Identificador [“,”<ListaIdentificadores>]
+     */
+    fun esListaIdentificadores():ArrayList<Token>?{
+        var listaIdentificadores = ArrayList<Token>()
+        while (tokenActual.categoria == Categoria.IDENTIFICADOR){
+            var identi = tokenActual
+            listaIdentificadores.add(identi)
+            obtenerSiguienteToken()
+            if(tokenActual.categoria == Categoria.COMA){
+                obtenerSiguienteToken()
+
+            }else{
+                if(tokenActual.categoria != Categoria.PARENTESIS_DER){
+                    reportarError("Falta un parentisis derecho en la lista de parametros")
+                }
+                break
+            }
+
+        }
+        return listaIdentificadores
+    }
+
+    /**
+     * <Asignación> ::= identificador operadorAsignación <Expresión> "."
+     */
+    fun esAsignacion(){
+
+        if(tokenActual.categoria == Categoria.IDENTIFICADOR){
+            var identi = tokenActual
+            obtenerSiguienteToken()
+            if(tokenActual.categoria == Categoria.OPERADOR_ASIGNACION){
+                
+            }
+        }
+    }
 
 }
