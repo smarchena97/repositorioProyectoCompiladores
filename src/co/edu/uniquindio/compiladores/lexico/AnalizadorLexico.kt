@@ -9,6 +9,7 @@ class AnalizadorLexico (var codigoFuente:String) {
     var filaActual = 0
     var columnaActual = 0
     val listaPalabrasReservadas = ArrayList<String>()
+    var listaErrores = ArrayList<Error>()
 
     init{listaPalabrasReservadas.add("numZ")
         listaPalabrasReservadas.add("numR")
@@ -28,6 +29,8 @@ class AnalizadorLexico (var codigoFuente:String) {
         listaPalabrasReservadas.add("mut")
         listaPalabrasReservadas.add("inmut")
         listaPalabrasReservadas.add("println")
+        listaPalabrasReservadas.add("True")
+        listaPalabrasReservadas.add("False")
     }
 
     fun almacenarToken(lexema:String, categoria: Categoria, fila:Int, columna:Int) = listaTokens.add( Token(lexema, categoria, fila, columna)  )
