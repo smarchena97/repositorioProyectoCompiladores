@@ -9,16 +9,6 @@ class ExpresionLogica():Expresion() {
     var valorLogico:Token? = null
     var operadorL:Token? = null
 
-    constructor(expL:ExpresionLogica, operadorL:Token, expL2:ExpresionLogica):this(){
-        this.expL1 = expL
-        this.operadorL = operadorL
-        this.expL2 = expL2
-
-    }
-    constructor(expL:ExpresionLogica):this(){
-        this.expL1 = expL
-    }
-
     constructor(expR:ExpresionRelacional, operadorL:Token, expL2:ExpresionLogica):this(){
         this.expR = expR
         this.operadorL = operadorL

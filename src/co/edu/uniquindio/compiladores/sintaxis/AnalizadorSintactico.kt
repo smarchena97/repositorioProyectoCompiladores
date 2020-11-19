@@ -52,33 +52,42 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
     fun esDesicion(): Decision? {
         if (tokenActual.categoria == Categoria.PALABRA_RESERVADA && tokenActual.lexema == "se") {
             obtenerSiguienteToken()
-            val expresion = esExpresion()
-            if (expresion != null) {
+            if (tokenActual.categoria == Categoria.PARENTESIS_IZQ) {
                 obtenerSiguienteToken()
-                val listaSentencias = esBloqueSentencias()
-                if (listaSentencias != null) {
-                    if (tokenActual.categoria == Categoria.PALABRA_RESERVADA && tokenActual.lexema == "altro") {
+                val expresion = esExpresionLogica()
+                if (expresion != null) {
+                    if (tokenActual.categoria == Categoria.PARENTESIS_DER) {
                         obtenerSiguienteToken()
-                        val listaSentenciasAltro = esBloqueSentencias()
-                        if (listaSentenciasAltro != null) {
-                            return Decision(expresion, listaSentencias, listaSentenciasAltro)
-                        } else {
+                        val listaSentencias = esBloqueSentencias()
+                        if (listaSentencias != null) {
+                            obtenerSiguienteToken()
+                            if (tokenActual.categoria == Categoria.PALABRA_RESERVADA && tokenActual.lexema == "altro") {
+                                obtenerSiguienteToken()
+                                val listaSentenciasAltro = esBloqueSentencias()
+                                if (listaSentenciasAltro != null) {
+                                    return Decision(expresion, listaSentencias, listaSentenciasAltro)
+                                } else {
                                     reportarError("Falta bloque de sentencias")
-                        }
+                                }
 
-                    } else {
+                            } else {
                                 return Decision(expresion, listaSentencias, null)
-                    }
-                } else {
+                            }
+                        } else {
                             reportarError("Falta bloque de sentencias")
+                        }
+                    } else {
+                        reportarError("Falta parentesis derecho")
+                    }
                 }
-            }else{
-                reportarError("Falta una Expresion logica")
+            } else {
+                reportarError("Falta parentesis izquierdo")
             }
         }
 
         return null
     }
+
 
     /**
      * <ListaParametros> ::= <Parametro>[","<ListaParametros>]
@@ -280,15 +289,21 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
     }
 
     /**
-     * poner bnf
+     * <Expresion> ::= <ExpresionLogica> |<ExpresionRelacional> |<ExpresionAritmetica> | <ExpresionCadena>
      */
     fun esExpresion():Expresion?{
-        var e:Expresion? = esExpresionAritmetica()
-        if(e != null) return e
-        e = esExpresionLogica()
-        if(e != null) return e
+        var e:Expresion? = esExpresionLogica()
+        if(e != null) {
+            return e
+        }
         e = esExpresionRelacional()
-        if(e != null) return e
+        if(e != null) {
+            return e
+        }
+        e = esExpresionAritmetica()
+        if(e != null){
+            return e
+        }
         e = esExpresionCadena()
         return e
     }
@@ -340,53 +355,37 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
      * <valoirLogico> [operadorLogico <ExpresionLogica>]| <ExpresionRelacionla>[operadorLogico <ExpresionLogica>]
      */
     fun esExpresionLogica():ExpresionLogica?{
-        if(tokenActual.categoria == Categoria.PARENTESIS_IZQ) {
-            obtenerSiguienteToken()
-            val expL = esExpresionLogica()
-            if (expL != null) {
-                obtenerSiguienteToken()
+
+            val expR = esExpresionRelacional()
+            if (expR != null) {
                 if (tokenActual.categoria == Categoria.OPERADOR_LOGICO) {
                     val operadorL = tokenActual
                     obtenerSiguienteToken()
                     val expL2 = esExpresionLogica()
                     if (expL2 != null) {
-                        return ExpresionLogica(expL, operadorL, expL2)
+                        return ExpresionLogica(expR, operadorL, expL2)
                     }
                 } else {
-                    return ExpresionLogica(expL)
+                    return ExpresionLogica(expR)
                 }
             } else {
-                val expR = esExpresionRelacional()
-                if (expR != null) {
+                if (tokenActual.categoria == Categoria.PALABRA_RESERVADA && (tokenActual.lexema == "True" || tokenActual.lexema == "False")){
+                    val valorLogico = tokenActual
                     obtenerSiguienteToken()
                     if (tokenActual.categoria == Categoria.OPERADOR_LOGICO) {
                         val operadorL = tokenActual
                         obtenerSiguienteToken()
                         val expL2 = esExpresionLogica()
                         if (expL2 != null) {
-                            return ExpresionLogica(expR, operadorL, expL2)
+                            return ExpresionLogica(valorLogico, operadorL, expL2)
                         }
                     } else {
-                        return ExpresionLogica(expR)
+                        return ExpresionLogica(valorLogico)
                     }
                 }
 
             }
-            if (tokenActual.categoria == Categoria.PALABRA_RESERVADA && (tokenActual.lexema == "True" || tokenActual.lexema == "False")){
-                val valorLogico = tokenActual
-                obtenerSiguienteToken()
-                if (tokenActual.categoria == Categoria.OPERADOR_LOGICO) {
-                    val operadorL = tokenActual
-                    obtenerSiguienteToken()
-                    val expL2 = esExpresionLogica()
-                    if (expL2 != null) {
-                        return ExpresionLogica(valorLogico, operadorL, expL2)
-                    }
-                } else {
-                    return ExpresionLogica(valorLogico)
-                }
-            }
-        }
+
         return null
     }
 
@@ -396,8 +395,6 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
     fun esExpresionRelacional():ExpresionRelacional?{
         var exp1= esExpresionAritmetica()
         if(exp1 != null){
-            obtenerSiguienteToken()
-            print(tokenActual.lexema)
             if(tokenActual.categoria == Categoria.OPERADORES_RELACIONALES){
                 val operadorRelacional = tokenActual
                 obtenerSiguienteToken()
