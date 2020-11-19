@@ -299,4 +299,40 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
         }
     }
 
+    fun esLectura():Lectura?{
+        if(tokenActual.categoria == Categoria.PALABRA_RESERVADA){
+            if(tokenActual.lexema == "read"){
+                obtenerSiguienteToken()
+                if(tokenActual.categoria == Categoria.PARENTESIS_IZQ){
+                    obtenerSiguienteToken()
+                    if(tokenActual.categoria == Categoria.CADENA){
+                        var cadena = tokenActual
+                        obtenerSiguienteToken()
+                        if(tokenActual.categoria == Categoria.PARENTESIS_DER){
+
+                        }
+                    }
+                }
+            }
+        }
+        return null
+    }
+
+    fun esImpresion(){
+        if(tokenActual.categoria == Categoria.PALABRA_RESERVADA){
+            if (tokenActual.lexema == "println"){
+                obtenerSiguienteToken()
+                if(tokenActual.categoria == Categoria.PARENTESIS_IZQ){
+                    obtenerSiguienteToken()
+                    if(tokenActual.categoria == Categoria.IDENTIFICADOR || tokenActual.categoria == Categoria.CADENA ){
+                        obtenerSiguienteToken()
+                        if(tokenActual.categoria == Categoria.PARENTESIS_DER){
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }

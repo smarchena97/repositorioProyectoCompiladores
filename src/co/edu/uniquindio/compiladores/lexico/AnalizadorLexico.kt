@@ -27,6 +27,7 @@ class AnalizadorLexico (var codigoFuente:String) {
         listaPalabrasReservadas.add("read")
         listaPalabrasReservadas.add("mut")
         listaPalabrasReservadas.add("inmut")
+        listaPalabrasReservadas.add("println")
     }
 
     fun almacenarToken(lexema:String, categoria: Categoria, fila:Int, columna:Int) = listaTokens.add( Token(lexema, categoria, fila, columna)  )
