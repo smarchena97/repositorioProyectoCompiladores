@@ -25,6 +25,8 @@ class AnalizadorLexico (var codigoFuente:String) {
         listaPalabrasReservadas.add("fun")
         listaPalabrasReservadas.add("bool")
         listaPalabrasReservadas.add("void")
+        listaPalabrasReservadas.add("True")
+        listaPalabrasReservadas.add("False")
     }
 
     fun almacenarToken(lexema:String, categoria: Categoria, fila:Int, columna:Int) = listaTokens.add( Token(lexema, categoria, fila, columna)  )

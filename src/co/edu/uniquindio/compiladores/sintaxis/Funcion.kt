@@ -10,21 +10,21 @@ class Funcion(var nombreFuncion:Token, var tipoRetorno:Token, var listaParametro
     }
     fun getArbolVisual():TreeItem<String>{
         var raiz = TreeItem<String>("Funcion")
-        raiz.children.add(TreeItem("Nombre: "+nombreFuncion.lexema))
-        raiz.children.add(TreeItem("Tipo Retorno: "+tipoRetorno.lexema))
+        raiz.children.add(TreeItem(nombreFuncion.lexema))
+        raiz.children.add(TreeItem(tipoRetorno.lexema))
         var raizParametros = TreeItem("Parametros")
         for(i in listaParametros!!){
             raizParametros.children.add(i.getArbolVisual())
         }
             raiz.children.add(raizParametros)
 
-      var raizSentencias= TreeItem("Sentencias")
+      /**  var raizSentencias= TreeItem("Sentencias")
 
         for(i in listaSentencias){
-            raizSentencias.children.add(i.getArbolVisual())
+            raizParametros.children.add(i.getArbolVisual())
         }
         raiz.children.add(raizSentencias)
-
-        return raiz
+       */
+        return  raiz
     }
 }

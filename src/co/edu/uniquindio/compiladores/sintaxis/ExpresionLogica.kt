@@ -1,7 +1,6 @@
 package co.edu.uniquindio.compiladores.sintaxis
 
 import co.edu.uniquindio.compiladores.lexico.Token
-import javafx.scene.control.TreeItem
 
 class ExpresionLogica():Expresion() {
     var expR:ExpresionRelacional? = null
@@ -39,15 +38,5 @@ class ExpresionLogica():Expresion() {
         this.valorLogico = valorLogico
     }
 
-    override fun toString(): String {
-        return "ExpresionLogica(expR=$expR, expL1=$expL1, expL2=$expL2, valorLogico=$valorLogico, operadorL=$operadorL)"
-    }
-
-    override fun getArbolVisual(): TreeItem<String> {
-        var raiz = TreeItem<String>("Expresion Logica")
-
-        return raiz
-
-    }
 
 }

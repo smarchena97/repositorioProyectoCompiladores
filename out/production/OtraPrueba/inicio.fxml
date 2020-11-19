@@ -3,11 +3,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="868.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.compiladores.controladores.InicioController">
+<AnchorPane prefHeight="646.0" prefWidth="865.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.compiladores.controladores.InicioController">
    <children>
-      <Button fx:id="botonCambiar" layoutX="28.0" layoutY="31.0" mnemonicParsing="false" onAction="#analizarCodigo" text="Analizar Codigo" />
-      <TextArea fx:id="codigoFuente" layoutX="28.0" layoutY="66.0" prefHeight="388.0" prefWidth="536.0" />
-      <TableView fx:id="tablaTokens" layoutX="28.0" layoutY="493.0" prefHeight="332.0" prefWidth="536.0">
+      <Button fx:id="botonCambiar" layoutX="49.0" layoutY="14.0" mnemonicParsing="false" onAction="#analizarCodigo" text="Analizar Codigo" />
+      <TextArea fx:id="codigoFuente" layoutX="49.0" layoutY="44.0" prefHeight="318.0" prefWidth="536.0" />
+      <TableView fx:id="tablaTokens" layoutX="49.0" layoutY="380.0" prefHeight="223.0" prefWidth="536.0">
         <columns>
           <TableColumn fx:id="colLexema" prefWidth="193.0" text="Lexema" />
           <TableColumn fx:id="colCategoria" prefWidth="165.0" text="Categoria" />
@@ -18,5 +18,6 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
       </TableView>
+      <TreeView fx:id="arbolVisual" layoutX="601.0" layoutY="44.0" prefHeight="559.0" prefWidth="247.0" />
    </children>
 </AnchorPane>
