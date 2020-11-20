@@ -449,7 +449,9 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
                         var cadena = tokenActual
                         obtenerSiguienteToken()
                         if(tokenActual.categoria == Categoria.PARENTESIS_DER){
-
+                            return Lectura(cadena)
+                        }else{
+                            reportarError("Falta parentesis derecho")
                         }
                     }
                 }
@@ -465,6 +467,7 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
                 if(tokenActual.categoria == Categoria.PARENTESIS_IZQ){
                     obtenerSiguienteToken()
                     if(tokenActual.categoria == Categoria.IDENTIFICADOR || tokenActual.categoria == Categoria.CADENA ){
+                        var impresion = tokenActual
                         obtenerSiguienteToken()
                         if(tokenActual.categoria == Categoria.PARENTESIS_DER){
 
@@ -474,5 +477,14 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
             }
         }
     }
+
+    // ---------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
 
 }
