@@ -247,7 +247,7 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
 
        var s:Sentencia? = esDesicion()
         if(s != null) return s
-        /** s = esDeclaracionVariable()
+        /* s = esDeclaracionVariable()
         if(s != null) return s
         s = esAsignacion()
         if(s != null) return s
@@ -256,7 +256,7 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
         s = esLectura()
         if(s != null) return s
         s = esRetorno()
-        if(s != null) return s
+        if(s != null) return s*/
         s = esInvocacion()
         if(s != null) return s
         s = esCicloMientras()
@@ -264,7 +264,7 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
         s = esIncremento()
         if(s != null) return s
         s = esDecremento()
-        return s  */
+        return s
         return null
     }
 
