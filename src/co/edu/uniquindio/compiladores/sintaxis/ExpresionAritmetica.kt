@@ -29,8 +29,21 @@ class ExpresionAritmetica():Expresion() {
     override fun getArbolVisual(): TreeItem<String> {
         var raiz = TreeItem<String>("Expresion Aritmetica")
 
-        if(valorNumerico != null){
+        if(valorNumerico != null && operador == null){
             raiz.children.add(valorNumerico!!.getArbolVisual())
+        }
+        if(valorNumerico != null && operador != null && expresion2 != null){
+            raiz.children.add(valorNumerico!!.getArbolVisual())
+            raiz.children.add(TreeItem("${operador!!.lexema}"))
+            raiz.children.add(expresion2!!.getArbolVisual())
+        }
+        if(expresion1 != null && expresion2==null){
+            raiz.children.add(expresion1!!.getArbolVisual())
+        }
+        if(expresion1 != null && expresion2!=null){
+            raiz.children.add(expresion1!!.getArbolVisual())
+            raiz.children.add(TreeItem("${operador!!.lexema}"))
+            raiz.children.add(expresion2!!.getArbolVisual())
         }
 
         return  raiz

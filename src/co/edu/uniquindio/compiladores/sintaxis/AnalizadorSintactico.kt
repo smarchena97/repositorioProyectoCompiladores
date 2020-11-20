@@ -382,7 +382,6 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
                         return ExpresionLogica(valorLogico)
                     }
                 }
-
             }
 
         return null
@@ -405,8 +404,7 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
         }
         val expC1 = esExpresionCadena()
         if(expC1 != null){
-            obtenerSiguienteToken()
-            if(tokenActual.categoria == Categoria.OPERADORES_RELACIONALES && (tokenActual.lexema == "¬;" || tokenActual.lexema == ";;")){
+            if(tokenActual.categoria == Categoria.OPERADORES_RELACIONALES && (tokenActual.lexema == "¬:" || tokenActual.lexema == "::")){
                 val operadorRelacional = tokenActual
                 obtenerSiguienteToken()
                 val expC2 = esExpresionCadena()
@@ -418,12 +416,64 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
 
         return null
     }
-
     /**
      *  <ExpreisonCadena> ::= [Identificador “+”] <ExpresionCadena> [“+”Identifiacdor] | [cadena“+”] <ExpresionCadena> [“+”cadena] | Cadena
      */
     fun esExpresionCadena():ExpresionCadena?{
-        return null
+
+    if(tokenActual.categoria == Categoria.IDENTIFICADOR){
+        val identificador1 = tokenActual
+        obtenerSiguienteToken()
+        if(tokenActual.categoria == Categoria.OPERADOR_ARITMETICO && tokenActual.lexema == "+"){
+            obtenerSiguienteToken()
+            var expC=esExpresionCadena()
+             if(expC != null) {
+                 if(tokenActual.categoria == Categoria.OPERADOR_ARITMETICO && tokenActual.lexema == "+") {
+                     obtenerSiguienteToken()
+                     if (tokenActual.categoria == Categoria.IDENTIFICADOR) {
+                         val identificador2 = tokenActual
+                         return ExpresionCadena(identificador1, expC, identificador2)
+                     }else{
+                         reportarError("Falta concatenar una expresion")
+                     }
+                 }else {
+                     return ExpresionCadena(identificador1, expC)
+                 }
+             }else{
+                 reportarError("Falta una expresion")
+             }
+         }else{
+
+                return ExpresionCadena(identificador1)
+        }
+    }else if(tokenActual.categoria == Categoria.CADENA) {  //cadena + a
+        val cadena1 = tokenActual
+        obtenerSiguienteToken()
+        if (tokenActual.categoria == Categoria.OPERADOR_ARITMETICO && tokenActual.lexema == "+") {
+            obtenerSiguienteToken()
+          //  var aux = tokenActual
+            val expC = esExpresionCadena()
+            if (expC != null) {
+                if (tokenActual.categoria == Categoria.OPERADOR_ARITMETICO && tokenActual.lexema == "+") {
+                    obtenerSiguienteToken()
+                    if (tokenActual.categoria == Categoria.CADENA) {
+                        val cadena2 = tokenActual
+                        return ExpresionCadena(cadena1, expC, cadena2)
+                    } else {
+                        reportarError("Falta concatenar una expresion")
+                    }
+                }else {
+                    return ExpresionCadena(cadena1,expC)
+                }
+            }
+            if(tokenActual.categoria == Categoria.IDENTIFICADOR){
+                return ExpresionCadena(cadena1,tokenActual)
+            }
+        }else{
+            return ExpresionCadena(cadena1)
+        }
+    }
+    return null
     }
 
     fun esValorNumerico():ValorNumerico?{
@@ -432,7 +482,7 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
             signo = tokenActual
             obtenerSiguienteToken()
         }
-        if(tokenActual.categoria == Categoria.ENTERO || tokenActual.categoria == Categoria.DECIMAL || tokenActual.categoria == Categoria.IDENTIFICADOR ){
+        if(tokenActual.categoria == Categoria.ENTERO || tokenActual.categoria == Categoria.DECIMAL || tokenActual.categoria == Categoria.IDENTIFICADOR && tokenActual.categoria != Categoria.CADENA){
             val valor = tokenActual
             return ValorNumerico(signo, valor)
         }
@@ -477,14 +527,4 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
             }
         }
     }
-
-    // ---------------------------------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
 }
