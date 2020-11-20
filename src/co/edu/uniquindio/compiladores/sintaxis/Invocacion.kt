@@ -11,7 +11,7 @@ class Invocacion(var nombreFuncion: Token, var listaArgumentos: ArrayList<Argume
 
     override fun getArbolVisual(): TreeItem<String> {
         var raiz = TreeItem<String>("Invocación")
-        raiz.children.add(TreeItem(nombreFuncion.lexema))
+        raiz.children.add(TreeItem("Nombre: "+nombreFuncion.lexema))
         var raizArgumentos = TreeItem("Argumentos")
 
         for(i in listaArgumentos!!){
