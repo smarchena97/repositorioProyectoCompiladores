@@ -10,6 +10,8 @@ class Decremento(var nombre: Token):Sentencia() {
     }
 
     override fun getArbolVisual(): TreeItem<String> {
-        return TreeItem("${nombre.lexema}")
+        var raiz= TreeItem("Decremento")
+        raiz.children.add(TreeItem("${nombre.lexema} --"))
+        return raiz
     }
 }

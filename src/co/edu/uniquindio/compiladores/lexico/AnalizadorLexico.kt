@@ -58,10 +58,10 @@ class AnalizadorLexico (var codigoFuente:String) {
             if(esEntero2()) continue
             if(esDecimal()) continue
             if(esIdentificador()) continue
-            if(esOperadorAritmetico()) continue
-            if(esOperadorAsignacion()) continue
             if(esOperadorIncremento()) continue
             if(esOperadorDecremento()) continue
+            if(esOperadorAritmetico()) continue
+            if(esOperadorAsignacion()) continue
             if(esOperadorRelacional()) continue
             if(esOperadorLogico()) continue
             if(esPalabraReservadaEntero()) continue
@@ -264,7 +264,7 @@ class AnalizadorLexico (var codigoFuente:String) {
             lexema += caracterActual
             obtenerSiguienteCaracter()
 
-            if(caracterActual == ':'){
+            if(caracterActual == ':' || caracterActual == '+' || caracterActual == '-'){
                 hacerBT(posicionInicial, filaInicial, columnaInicial)
                 return false
             }
