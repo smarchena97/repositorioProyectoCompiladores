@@ -1,6 +1,7 @@
 package co.edu.uniquindio.compiladores.sintaxis
 
 import co.edu.uniquindio.compiladores.lexico.Token
+import javafx.scene.control.TreeItem
 
 class ExpresionLogica():Expresion() {
     var expR:ExpresionRelacional? = null
@@ -27,6 +28,26 @@ class ExpresionLogica():Expresion() {
     constructor(valorLogico:Token):this(){
         this.valorLogico = valorLogico
     }
+    override fun getArbolVisual(): TreeItem<String> {
+        var raiz = TreeItem<String>("Expresion Logica")
+        if(expR == null && expL1 == null && expL2 == null && operadorL == null && valorLogico != null){
+            raiz.children.add(TreeItem("${valorLogico!!.lexema}"))
+        }
+        if(expR != null && expL1 == null && expL2 == null && operadorL == null && valorLogico == null){
+            raiz.children.add(expR!!.getArbolVisual())
+        }
+        if(expR == null && expL1 == null && expL2 != null && operadorL != null && valorLogico != null){
+            raiz.children.add(TreeItem("${valorLogico!!.lexema}"))
+            raiz.children.add(TreeItem("${operadorL!!.lexema}"))
+            raiz.children.add(expL2!!.getArbolVisual())
+        }
+        if(expR != null && expL1 == null && expL2 != null && operadorL != null && valorLogico == null){
+            raiz.children.add(expR!!.getArbolVisual())
+            raiz.children.add(TreeItem("${operadorL!!.lexema}"))
+            raiz.children.add(expL2!!.getArbolVisual())
+        }
 
+        return raiz
+    }
 
 }

@@ -26,8 +26,13 @@ class ExpresionAritmetica():Expresion() {
         this.valorNumerico = valorNumerico
     }
 
-    fun getArbolVisual(): TreeItem<String> {
+    override fun getArbolVisual(): TreeItem<String> {
         var raiz = TreeItem<String>("Expresion Aritmetica")
+
+        if(valorNumerico != null){
+            raiz.children.add(valorNumerico!!.getArbolVisual())
+        }
+
         return  raiz
     }
 

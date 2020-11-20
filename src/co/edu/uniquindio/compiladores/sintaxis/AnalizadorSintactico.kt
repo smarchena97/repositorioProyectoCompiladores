@@ -60,7 +60,6 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
                         obtenerSiguienteToken()
                         val listaSentencias = esBloqueSentencias()
                         if (listaSentencias != null) {
-                            obtenerSiguienteToken()
                             if (tokenActual.categoria == Categoria.PALABRA_RESERVADA && tokenActual.lexema == "altro") {
                                 obtenerSiguienteToken()
                                 val listaSentenciasAltro = esBloqueSentencias()
@@ -421,7 +420,7 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
     }
 
     /**
-     *  <ExpresionCadena> ::= cadenaDeCaracteres ["+"<Expresion> ] | <Expresion> “+”cadenaDeCaracteres
+     *  <ExpreisonCadena> ::= [Identificador “+”] <ExpresionCadena> [“+”Identifiacdor] | [cadena“+”] <ExpresionCadena> [“+”cadena] | Cadena
      */
     fun esExpresionCadena():ExpresionCadena?{
         return null

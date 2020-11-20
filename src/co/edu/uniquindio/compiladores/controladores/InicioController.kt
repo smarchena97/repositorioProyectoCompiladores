@@ -2,14 +2,18 @@ package co.edu.uniquindio.compiladores.controladores
 
 import co.edu.uniquindio.compiladores.lexico.AnalizadorLexico
 import co.edu.uniquindio.compiladores.lexico.Token
+import co.edu.uniquindio.compiladores.lexico.Error
 import co.edu.uniquindio.compiladores.sintaxis.AnalizadorSintactico
 import javafx.collections.FXCollections
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
+import javafx.fxml.Initializable
 import javafx.scene.control.*
 import javafx.scene.control.cell.PropertyValueFactory
+import java.net.URL
+import java.util.*
 
-class InicioController {
+class InicioController: Initializable {
 
     @FXML
     lateinit var codigoFuente: TextArea
@@ -26,7 +30,28 @@ class InicioController {
     @FXML
     lateinit var colColumna: TableColumn<Token, Int>
 
+    @FXML lateinit var tablaErrores:TableView<Error>
+
+    @FXML lateinit var mensajeError:TableColumn<Error,String>
+    @FXML lateinit var filaError:TableColumn<Error,Int>
+    @FXML lateinit var columnaError:TableColumn<Error,Int>
+
+
     @FXML lateinit var arbolVisual:TreeView<String>
+
+    /**
+     * Construye las tablas de la interfaz grafica
+     */
+    override fun initialize(location: URL?, resources: ResourceBundle?) {
+        colLexema.cellValueFactory = PropertyValueFactory("lexema")
+        colCategoria.cellValueFactory = PropertyValueFactory("categoria")
+        colFila.cellValueFactory = PropertyValueFactory("fila")
+        colColumna.cellValueFactory = PropertyValueFactory("columna")
+
+        mensajeError.cellValueFactory = PropertyValueFactory("error")
+        filaError.cellValueFactory = PropertyValueFactory("fila")
+        columnaError.cellValueFactory = PropertyValueFactory("columna")
+    }
 
     @FXML
     fun analizarCodigo(e: ActionEvent) {
@@ -35,13 +60,10 @@ class InicioController {
             val lexico = AnalizadorLexico(codigoFuente.text)
             lexico.analizar()
 
-            colLexema.cellValueFactory = PropertyValueFactory("lexema")
-            colCategoria.cellValueFactory = PropertyValueFactory("categoria")
-            colFila.cellValueFactory = PropertyValueFactory("fila")
-            colColumna.cellValueFactory = PropertyValueFactory("columna")
-
             tablaTokens.items = FXCollections.observableArrayList(lexico.listaTokens)
-            print(lexico.listaTokens)
+            tablaErrores.items = FXCollections.observableArrayList(lexico.listaErrores)
+
+
 
             if (lexico.listaErrores.isEmpty()) {
 
@@ -52,8 +74,10 @@ class InicioController {
                 }
             }else{
                 var alerta = Alert(Alert.AlertType.WARNING)
-                alerta.contentText = "Hay errores en el cofigo fuente"
+                alerta.headerText = "Mensaje"
+                alerta.contentText = "Hay errores en el codigo fuente"
             }
         }
     }
+
 }

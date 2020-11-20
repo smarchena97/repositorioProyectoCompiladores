@@ -18,13 +18,13 @@ class Funcion(var nombreFuncion:Token, var tipoRetorno:Token, var listaParametro
         }
             raiz.children.add(raizParametros)
 
-      /**  var raizSentencias= TreeItem("Sentencias")
+      var raizSentencias= TreeItem("Sentencias")
 
         for(i in listaSentencias){
-            raizParametros.children.add(i.getArbolVisual())
+            raizSentencias.children.add(i.getArbolVisual())
         }
         raiz.children.add(raizSentencias)
-       */
+
         return  raiz
     }
 }
