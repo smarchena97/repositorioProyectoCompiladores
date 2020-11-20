@@ -1,7 +1,6 @@
 package co.edu.uniquindio.compiladores.sintaxis
 
 import co.edu.uniquindio.compiladores.lexico.Categoria
-import co.edu.uniquindio.compiladores.lexico.Error
 import co.edu.uniquindio.compiladores.lexico.Token
 
 class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
@@ -89,7 +88,7 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
 
 
     /**
-     * <ListaParametros> ::= <Parametro>[","<ListaParametros>]
+     * fun <TipoRetorno> identificador "("[<ListaParametros>]")" <BloqueSentencias>
      */
     fun esFuncion():Funcion?{
 
@@ -156,7 +155,7 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
     }
 
     /**
-     * <TipoRetorno> ::= numZ | numR | chordi | khar | bool
+     * <TipoDato> ::= numZ | numR | chordi | khar | bool
      */
     fun estipoDato():Token?{
 
@@ -478,8 +477,223 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
         }
     }
 
+
+
     // ---------------------------------------------------------------------------------------------------------
 
+    /**
+     * <ListaInvocaciones> ::= <Invocacion> [<ListaInvocaciones>]
+     */
+    fun esListaInvocaciones(): ArrayList<Invocacion> {
+        var listaInvocaciones = ArrayList<Invocacion>()
+        var invocacion = esInvocacion()
+
+        while (invocacion != null) {
+            listaInvocaciones.add(invocacion)
+            invocacion = esInvocacion()
+        }
+        return listaInvocaciones
+    }
+
+    /**
+     * <Invocaciones> ::= nombreMetodo”(“<ListaArgumentos>”)”
+     */
+    fun esInvocacion(): Invocacion? {
+        if (tokenActual.categoria == Categoria.METODO) {
+            var nombreMetodo = tokenActual
+            obtenerSiguienteToken()
+
+            if (tokenActual.categoria == Categoria.PARENTESIS_IZQ) {
+                obtenerSiguienteToken()
+                var listaArgumentos = esListaArgumentos()
+
+                if (tokenActual.categoria == Categoria.PARENTESIS_DER) {
+                    if (listaArgumentos != null) {
+                        obtenerSiguienteToken()
+                        return Invocacion(nombreMetodo, listaArgumentos)
+
+                    } else {
+                        reportarError("Falta la invocacion")
+                    }
+                } else {
+                    reportarError("Falta un parentisis derecho en la lista de parametros")
+                }
+            } else {
+                reportarError("Falta parentisis izquierdo")
+            }
+        }
+        return null
+    }
+
+    /**
+     * <ListaArgumentos> ::= <Argumento>[","< ListaArgumentos>]
+     */
+    fun esListaArgumentos(): ArrayList<Argumento> {
+
+        var listaArgumentos = ArrayList<Argumento>()
+        var argumento = esArgumento()
+
+        while (argumento != null) {
+            listaArgumentos.add(argumento)
+            obtenerSiguienteToken()
+            if (tokenActual.categoria == Categoria.COMA) {
+                obtenerSiguienteToken()
+                argumento = esArgumento()
+            } else {
+                break
+            }
+        }
+        return listaArgumentos
+    }
+
+
+    /**
+     * <Argumento> ::= Identificador
+     */
+    fun esArgumento(): Argumento? {
+
+        if (tokenActual.categoria == Categoria.IDENTIFICADOR) {
+            val nombre = tokenActual
+            return Argumento(nombre)
+        } else {
+            reportarError("Falta el nombre del Argumento")
+        }
+        return null
+    }
+
+
+    /**
+     * <CicloMientras> ::=mentre "("<ExpresionLogica>")" <BloqueSentencias>
+     */
+    fun esCicloMientras(): CicloMientras? {
+        if (tokenActual.categoria == Categoria.PALABRA_RESERVADA && tokenActual.lexema == "mentre") {
+            obtenerSiguienteToken()
+            if (tokenActual.categoria == Categoria.PARENTESIS_IZQ) {
+                obtenerSiguienteToken()
+
+                val expresionLogica = esExpresionLogica()
+
+                if (expresionLogica != null) {
+                    if (tokenActual.categoria == Categoria.PARENTESIS_DER) {
+                        obtenerSiguienteToken()
+
+                        val bloqueSentencias = esBloqueSentencias()
+
+                        if (bloqueSentencias != null) {
+                            obtenerSiguienteToken()
+                            return CicloMientras(expresionLogica, bloqueSentencias)
+                        } else {
+                            reportarError("Faltó el bloque de sentencias en el ciclo mientras")
+                        }
+                    } else {
+                        reportarError("Falta parentesis derecho")
+                    }
+                } else {
+                    reportarError("Falta la expresion logica")
+                }
+            } else {
+                reportarError("Falta parentesis izquierdo")
+            }
+        }
+        return null
+    }
+
+
+    /**
+     *  <Arreglo> ::= array ”[“ TipoDato “]” identificador: [“<” <ListaArgumentos> “>”].
+     */
+    fun esArreglo(): Arreglo? {
+
+        if (tokenActual.categoria == Categoria.PALABRA_RESERVADA && tokenActual.lexema == "array") {
+            obtenerSiguienteToken()
+
+            if (tokenActual.categoria == Categoria.CORCHETE_IZQ) {
+                obtenerSiguienteToken()
+
+                val tipoDato = estipoDato()
+
+                if (tokenActual.categoria == Categoria.CORCHETE_DER) {
+                    obtenerSiguienteToken()
+
+                    if (tipoDato != null) {
+                        obtenerSiguienteToken()
+
+                        if (tokenActual.categoria == Categoria.IDENTIFICADOR) {
+                            val nombreArreglo = tokenActual
+                            obtenerSiguienteToken()
+                            var listaExpresiones = ArrayList<Argumento>()
+
+                            if (tokenActual.categoria == Categoria.OPERADOR_ASIGNACION && tokenActual.lexema == ":") {
+                                obtenerSiguienteToken()
+                                if (tokenActual.categoria == Categoria.LLAVE_IZQ) {
+                                    obtenerSiguienteToken()
+                                    listaExpresiones = esListaArgumentos()
+
+                                    if (tokenActual.categoria == Categoria.LLAVE_DER) {
+                                        obtenerSiguienteToken()
+                                    } else {
+                                        reportarError("Falta la llave derecha en el arreglo")
+                                    }
+                                } else {
+                                    reportarError("Falta la llave izquierda en el arreglo")
+                                }
+                            }
+                            if (tokenActual.categoria == Categoria.FINDESENTENCIA) {
+                                obtenerSiguienteToken()
+                                return Arreglo(tipoDato, nombreArreglo, listaExpresiones)
+                            }
+                        } else {
+                            reportarError("Falta definir el nombre del arreglo")
+                        }
+                    } else {
+                        reportarError("Falta tipo de dato del arreglo")
+                    }
+                } else {
+                    reportarError("Falta corchete derecho")
+                }
+            } else {
+                reportarError("Falta corchete izquierdo")
+            }
+        }
+
+        return null
+    }
+
+
+    /**
+     * <Incremento> ::= Identificador"++"
+     */
+    fun esIncremento(): Incremento? {
+
+        if (tokenActual.categoria == Categoria.IDENTIFICADOR) {
+            val nombre = tokenActual
+            obtenerSiguienteToken()
+            if (tokenActual.lexema == "++") {
+                return Incremento(nombre)
+            } else {
+                reportarError("Falta el nombre de la variable a Incrementar")
+            }
+        }
+        return null
+    }
+
+
+    /**
+     * <Decremento> ::= Identificador"--"
+     */
+    fun esDecremento(): Decremento? {
+
+        if (tokenActual.categoria == Categoria.IDENTIFICADOR) {
+            val nombre = tokenActual
+            obtenerSiguienteToken()
+            if (tokenActual.lexema == "--") {
+                return Decremento(nombre)
+            } else {
+                reportarError("Falta el nombre de la variable a Decrementar")
+            }
+        }
+        return null
+    }
 
 
 
