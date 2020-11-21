@@ -13,6 +13,7 @@ class Arreglo (var nombreArreglo: Token, var tipoDato:Token, var listaDatos: Arr
         var raiz = TreeItem<String>("Nombre Arreglo")
         raiz.children.add(TreeItem(nombreArreglo.lexema))
         var raizTipoDato= TreeItem("Tipo Dato")
+        raizTipoDato.children.add(TreeItem(tipoDato.lexema))
         raiz.children.add(raizTipoDato)
         var raizListaDatos= TreeItem("Lista Datos")
 

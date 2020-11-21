@@ -11,7 +11,7 @@ class CicloMientras (var expresionLogica: ExpresionLogica, var listaSentencia: A
     override fun getArbolVisual(): TreeItem<String> {
         var raiz = TreeItem<String>("Ciclo Mientras")
 
-        var expresion = TreeItem<String>("Expresion Logica")
+        var expresion = TreeItem<String>("Expresion Ciclo Mientras")
         expresion.children.add(expresionLogica.getArbolVisual())
         raiz.children.add(expresion)
 
