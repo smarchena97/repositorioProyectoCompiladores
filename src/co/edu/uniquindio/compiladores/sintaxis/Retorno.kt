@@ -21,5 +21,19 @@ class Retorno():Sentencia() {
         this.identificador = identificador
     }
 
+    override fun getArbolVisual(): TreeItem<String> {
+        var raiz = TreeItem<String>("Retorno")
+        if(expresionAritmetica != null){
+            raiz.children.add(expresionAritmetica!!.getArbolVisual())
+        }
+        if(expresionRelacional != null){
+            raiz.children.add(expresionRelacional!!.getArbolVisual())
+        }
+        if(identificador != null){
+            raiz.children.add(TreeItem("Identificador:${identificador!!.lexema}"))
+        }
+        return raiz
+    }
+
 
 }
