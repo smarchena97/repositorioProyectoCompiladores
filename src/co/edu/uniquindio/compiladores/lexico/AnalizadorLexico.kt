@@ -325,6 +325,8 @@ class AnalizadorLexico (var codigoFuente:String) {
                 obtenerSiguienteCaracter()
                 almacenarToken(lexema, Categoria.OPERADOR_INCREMENTO, filaInicial, columnaInicial)
                 return true
+            }else{
+                hacerBT(posicionInicial, filaInicial, columnaInicial)
             }
         }
 
@@ -345,6 +347,8 @@ class AnalizadorLexico (var codigoFuente:String) {
                 obtenerSiguienteCaracter()
                 almacenarToken(lexema, Categoria.OPERADOR_DECREMENTO, filaInicial, columnaInicial)
                 return true
+            }else{
+                hacerBT(posicionInicial,filaInicial,columnaInicial)
             }
         }
 
@@ -399,14 +403,14 @@ class AnalizadorLexico (var codigoFuente:String) {
             return true
         }
 
-        if(caracterActual == '^'){
+        if(caracterActual == '&'){
             var lexema = ""
             var filaInicial = filaActual
             var columnaInicial = columnaActual
             var posicionInicial = posicionActual
             lexema += caracterActual
             obtenerSiguienteCaracter()
-            if(caracterActual == '^'){
+            if(caracterActual == '&'){
                 lexema += caracterActual
                 obtenerSiguienteCaracter()
                 almacenarToken(lexema, Categoria.OPERADOR_LOGICO, filaInicial, columnaInicial)

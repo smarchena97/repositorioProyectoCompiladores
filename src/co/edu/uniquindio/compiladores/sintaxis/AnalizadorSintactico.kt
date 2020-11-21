@@ -527,9 +527,9 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
                 if(tokenActual.categoria == Categoria.IDENTIFICADOR){
                     while (tokenActual.categoria == Categoria.IDENTIFICADOR){
                         var identi = tokenActual
-                        esListaIdentificadores()
+                        listaIdentificadores = esListaIdentificadores()
                         //listaIdentificadores.add(identi)
-                        obtenerSiguienteToken()
+
                     }
                     if(estipoDato() != null){
                         var tipoDato = tokenActual
@@ -548,32 +548,12 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
         return null
     }
 
-    /**
-     * fun esListaParametros():ArrayList<Parametro>?{
-    var listaParametros = ArrayList<Parametro>()
-    var parametro = esParametro()
-    while (parametro != null){
-    listaParametros.add(parametro)
-    obtenerSiguienteToken()
-    if(tokenActual.categoria == Categoria.COMA){
-    obtenerSiguienteToken()
-    parametro = esParametro()
-    }else{
-    if(tokenActual.categoria != Categoria.PARENTESIS_DER){
-    reportarError("Falta un parentisis derecho en la lista de parametros")
-    }
-    break
-    }
 
-    }
-    return listaParametros
-    }
-     */
 
     /**
      * <ListaIdentificadores> ::= Identificador [“,”<ListaIdentificadores>]
      */
-    fun esListaIdentificadores():ArrayList<Token>?{
+    fun esListaIdentificadores():ArrayList<Token>{
         var listaIdentificadores = ArrayList<Token>()
         while (tokenActual.categoria == Categoria.IDENTIFICADOR){
             var identi = tokenActual
@@ -613,8 +593,6 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
                         reportarError("Falta simbolo de fin de sentencia")
                     }
                 }
-            }else{
-                reportarError("Falta operador de asignacion")
             }
         }
         return null
@@ -632,16 +610,21 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
                     obtenerSiguienteToken()
                     var exp1 = esExpresionAritmetica()
                     var exp2 = esExpresionRelacional()
+                    obtenerAnteriorToken()
                     if(tokenActual.categoria == Categoria.IDENTIFICADOR || tokenActual.categoria == Categoria.CADENA || exp1 != null || exp2 != null ){
+                        var cadena = tokenActual
                         obtenerSiguienteToken()
                         if(tokenActual.categoria == Categoria.PARENTESIS_DER){
                             if(exp1 != null){
+                                obtenerSiguienteToken()
                                 return Impresion(exp1)
                             }
                             if(exp2 != null){
+                                obtenerSiguienteToken()
                                 return Impresion(exp2)
                             }
-                            return Impresion(tokenActual)
+                            obtenerSiguienteToken()
+                            return Impresion(cadena)
                         }
                     }
                 }
@@ -656,17 +639,23 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
     fun esRetorno():Retorno?{
         if(tokenActual.categoria == Categoria.PALABRA_RESERVADA && tokenActual.lexema == "return"){
             obtenerSiguienteToken()
+
             var expAritmetica = esExpresionAritmetica()
             var expRelacional = esExpresionRelacional()
+            obtenerAnteriorToken()
+
             if (expAritmetica != null){
+                obtenerSiguienteToken()
                 return Retorno(expAritmetica)
             }
             if(expRelacional != null){
+                obtenerSiguienteToken()
                 return Retorno(expRelacional)
             }
             if(tokenActual.categoria == Categoria.IDENTIFICADOR){
                 return Retorno(tokenActual)
             }
+
         }
         return null
     }
@@ -884,6 +873,10 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
      * <Incremento> ::= Identificador"++"
      */
     fun esIncremento(): Incremento? {
+        if(tokenActual.categoria == Categoria.OPERADOR_INCREMENTO){
+            obtenerAnteriorToken()
+        }
+
 
         if (tokenActual.categoria == Categoria.IDENTIFICADOR) {
 
@@ -893,6 +886,7 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
             {
                 obtenerSiguienteToken()
                 if (tokenActual.categoria == Categoria.OPERADOR_INCREMENTO) {
+                    obtenerSiguienteToken()
                     obtenerSiguienteToken()
                     return Incremento(nombre)
                 }else {
@@ -911,6 +905,10 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
      * <Decremento> ::= Identificador"--"
      */
     fun esDecremento(): Decremento? {
+        if (tokenActual.categoria == Categoria.OPERADOR_DECREMENTO) {
+            obtenerAnteriorToken()
+        }
+
 
         if (tokenActual.categoria == Categoria.IDENTIFICADOR) {
 
@@ -919,6 +917,7 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
             obtenerSiguienteToken()
             if (tokenActual.categoria == Categoria.OPERADOR_DECREMENTO) {
                 obtenerSiguienteToken()
+                obtenerSiguienteToken()
                 return Decremento(nombre)
             }
         }
@@ -926,6 +925,9 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
         return null
     }
 
+    /**
+     * <CicloPer> ::= "per" "(" identificador "in" identificador ")" <BloqueSentencias> | "per" "(" identificador "in" cadena ")" <BloqueSentencias>
+     */
     fun esCicloPer():CicloPer?{
 
         if(tokenActual.categoria == Categoria.PALABRA_RESERVADA && tokenActual.lexema == "per" ){

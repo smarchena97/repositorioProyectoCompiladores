@@ -10,9 +10,9 @@ class DeclaracionVariable(var tipoVariable:Token, var listaVariables:ArrayList<T
 
     override fun getArbolVisual(): TreeItem<String> {
         var raiz = TreeItem<String>("Declaracion")
-        raiz.children.add(TreeItem("tipoVariable:${tipoVariable.lexema}"))
+        raiz.children.add(TreeItem("tipoVariable: ${tipoVariable.lexema}"))
         for (i in listaVariables){
-            raiz.children.add(TreeItem("Variable:${i.lexema}"))
+            raiz.children.add(TreeItem("Variable: ${i.lexema}"))
         }
         raiz.children.add(TreeItem("tipoDato:${tipoDato.lexema}"))
         return raiz
