@@ -1,6 +1,8 @@
 package co.edu.uniquindio.compiladores.sintaxis
 
+import co.edu.uniquindio.compiladores.lexico.Error
 import co.edu.uniquindio.compiladores.lexico.Token
+import co.edu.uniquindio.compiladores.semantica.TablaSimbolos
 import javafx.scene.control.TreeItem
 
 class CicloPer(var variableControl:Token,var indice:Token,var listaSentencia: ArrayList<Sentencia>): Sentencia() {
@@ -18,6 +20,12 @@ class CicloPer(var variableControl:Token,var indice:Token,var listaSentencia: Ar
 
         raiz.children.add(raizSentencia)
         return raiz
+    }
+
+    override fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, listaErrores: ArrayList<Error>, ambito: String) {
+        for(s in listaSentencia){
+            s.llenarTablaSimbolos(tablaSimbolos, listaErrores, ambito)
+        }
     }
 
 }

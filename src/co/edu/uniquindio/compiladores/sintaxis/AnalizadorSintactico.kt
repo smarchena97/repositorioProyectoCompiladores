@@ -34,6 +34,7 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
      */
     fun esUnidadDeCompilacion(): UnidadDeCompilacion? {
         val listaFunciones: ArrayList<Funcion> = esListaFunciones()
+       // val listaVariblesGlobales: ArrayList<DeclaracionVariable> = esListaVaribalesGlobales()
         return if (listaFunciones.size > 0) {
             UnidadDeCompilacion(listaFunciones)
         } else null

@@ -1,6 +1,8 @@
 package co.edu.uniquindio.compiladores.sintaxis
 
+import co.edu.uniquindio.compiladores.lexico.Error
 import co.edu.uniquindio.compiladores.lexico.Token
+import co.edu.uniquindio.compiladores.semantica.TablaSimbolos
 import javafx.scene.control.TreeItem
 
 class DeclaracionVariable(var tipoVariable:Token, var listaVariables:ArrayList<Token>, var tipoDato:Token):Sentencia() {
@@ -16,5 +18,11 @@ class DeclaracionVariable(var tipoVariable:Token, var listaVariables:ArrayList<T
         }
         raiz.children.add(TreeItem("tipoDato:${tipoDato.lexema}"))
         return raiz
+    }
+
+    override fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, listaErrores: ArrayList<Error>, ambito: String) {
+        for (lv in listaVariables){
+            tablaSimbolos.guardarSimboloValor(lv.lexema, tipoDato.lexema , true, ambito, lv.fila, lv.columna)
+        }
     }
 }

@@ -1,8 +1,11 @@
 package co.edu.uniquindio.compiladores.sintaxis
 
+import co.edu.uniquindio.compiladores.lexico.Categoria
 import co.edu.uniquindio.compiladores.lexico.Token
+import co.edu.uniquindio.compiladores.semantica.TablaSimbolos
 import javafx.scene.control.TreeItem
 
+@Suppress("UNREACHABLE_CODE")
 class ExpresionAritmetica():Expresion() {
     var expresion1:ExpresionAritmetica? = null
     var operador:Token? = null
@@ -47,6 +50,62 @@ class ExpresionAritmetica():Expresion() {
         }
 
         return  raiz
+    }
+
+    /**
+     * Funcionamiento dudoso
+     */
+    override fun obtenerTipo(tablaSimbolos: TablaSimbolos, ambito:String): String {
+        if(expresion1 != null && expresion2!=null){
+            var tipo1 =expresion1!!.obtenerTipo(tablaSimbolos,ambito)
+            var tipo2 =expresion2!!.obtenerTipo(tablaSimbolos,ambito)
+
+            if(tipo1 == "numR" || tipo2 == "numR"){
+                return "numR"
+            }else{
+                return "numZ"
+            }
+
+        }
+        else if(expresion1 != null && expresion2==null){
+            var tipo1 =expresion1!!.obtenerTipo(tablaSimbolos,ambito)
+            return tipo1
+        }
+        else if(valorNumerico != null && expresion2 != null){
+
+            var tipo2 =expresion2!!.obtenerTipo(tablaSimbolos,ambito)
+            if(valorNumerico!!.valor.categoria == Categoria.ENTERO && tipo2 == "numZ"){
+                return "numZ"
+            }else {
+                return tipo2
+            }
+            if (valorNumerico!!.valor.categoria != Categoria.DECIMAL) {
+                var simbolo = tablaSimbolos.buscarSimboloValor(valorNumerico!!.valor.lexema,ambito)
+                if(simbolo != null){
+                    if(simbolo.tipo == "numZ" && tipo2 != "numR") {
+                        return simbolo.tipo
+                    }else{
+                        return tipo2
+                    }
+                }
+            } else {
+                return "numR"
+            }
+        }
+        if(valorNumerico != null ) {
+
+            if(valorNumerico!!.valor.categoria == Categoria.ENTERO ){
+                return "numZ"
+            }else if(valorNumerico!!.valor.categoria == Categoria.DECIMAL){
+                return "numR"
+            }else{
+                var simbolo = tablaSimbolos.buscarSimboloValor(valorNumerico!!.valor.lexema,ambito)
+                if(simbolo != null){
+                    return simbolo.tipo
+                }
+            }
+        }
+        return ""
     }
 
 }

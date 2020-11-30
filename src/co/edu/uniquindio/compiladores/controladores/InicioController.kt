@@ -2,6 +2,7 @@ package co.edu.uniquindio.compiladores.controladores
 
 import co.edu.uniquindio.compiladores.lexico.AnalizadorLexico
 import co.edu.uniquindio.compiladores.lexico.Token
+import co.edu.uniquindio.compiladores.semantica.AnalizadorSemantico
 import co.edu.uniquindio.compiladores.sintaxis.Error
 import co.edu.uniquindio.compiladores.sintaxis.AnalizadorSintactico
 import javafx.collections.FXCollections
@@ -74,6 +75,10 @@ class InicioController: Initializable {
                 val uc = sintaxis.esUnidadDeCompilacion()
                 if (uc != null) {
                     arbolVisual.root = uc.getArbolVisual()
+                    val semantica = AnalizadorSemantico(uc!!)
+                    semantica.llenarTablaSimbolos()
+                    print(semantica.tablaSimbolos)
+                    print(semantica.erroresSemanticos)
                 }
             }else{
                 var alerta = Alert(Alert.AlertType.WARNING)

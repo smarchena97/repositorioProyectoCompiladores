@@ -1,5 +1,7 @@
 package co.edu.uniquindio.compiladores.sintaxis
 
+import co.edu.uniquindio.compiladores.lexico.Error
+import co.edu.uniquindio.compiladores.semantica.TablaSimbolos
 import javafx.scene.control.TreeItem
 
 class Decision():Sentencia() {
@@ -45,6 +47,17 @@ class Decision():Sentencia() {
         }
 
         return  raiz
+    }
+
+    override fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, listaErrores: ArrayList<Error>, ambito: String) {
+        for(s in listaSentencia!!){
+            s.llenarTablaSimbolos(tablaSimbolos, listaErrores, ambito)
+        }
+        if(listaSentenciaAltro != null){
+            for(s in listaSentenciaAltro!!){
+                s.llenarTablaSimbolos(tablaSimbolos, listaErrores, ambito)
+            }
+        }
     }
 
 }
