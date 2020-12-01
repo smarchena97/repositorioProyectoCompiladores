@@ -9,17 +9,15 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
     var tokenActual = listaTokens[0]
     var listaErrores = ArrayList<Error>()
 
+    fun hacerBT(posicionInicial:Int){
+
+        posicionActual = posicionInicial
+        tokenActual = listaTokens[posicionActual]
+    }
+
     fun obtenerSiguienteToken() {
 
         posicionActual++
-        if (posicionActual < listaTokens.size) {
-            tokenActual = listaTokens[posicionActual]
-        }
-    }
-
-    fun obtenerAnteriorToken() {
-
-        posicionActual--
         if (posicionActual < listaTokens.size) {
             tokenActual = listaTokens[posicionActual]
         }
@@ -230,11 +228,10 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
         if (tokenActual.categoria == Categoria.LLAVE_IZQ) {
             obtenerSiguienteToken()
 
-            var listaSentencias = esListaSentencias()
+            val listaSentencias = esListaSentencias()
 
             if (tokenActual.categoria == Categoria.LLAVE_DER) {
                 obtenerSiguienteToken()
-
                 return listaSentencias
             }
             else{
@@ -550,7 +547,6 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
     }
 
 
-
     /**
      * <ListaIdentificadores> ::= Identificador [“,”<ListaIdentificadores>]
      */
@@ -563,13 +559,7 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
             if(tokenActual.categoria == Categoria.COMA){
                 obtenerSiguienteToken()
 
-            }else{
-                if(tokenActual.categoria != Categoria.PARENTESIS_DER){
-                    reportarError("Falta un parentisis derecho en la lista de parametros")
-                }
-                break
             }
-
         }
         return listaIdentificadores
     }
@@ -581,6 +571,7 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
 
         if(tokenActual.categoria == Categoria.IDENTIFICADOR){
             var identi = tokenActual
+            val posicionA= posicionActual
             obtenerSiguienteToken()
             if(tokenActual.categoria == Categoria.OPERADOR_ASIGNACION){
                 obtenerSiguienteToken()
@@ -594,6 +585,17 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
                         reportarError("Falta simbolo de fin de sentencia")
                     }
                 }
+            }else {
+                if (tokenActual.categoria == Categoria.OPERADOR_INCREMENTO ) {
+                    hacerBT(posicionA)
+                    return null
+                }
+                else if (tokenActual.categoria == Categoria.OPERADOR_DECREMENTO) {
+                    hacerBT(posicionA)
+                    return null
+                }
+                reportarError("Falta operador de asignacion")
+
             }
         }
         return null
@@ -608,10 +610,11 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
             if (tokenActual.lexema == "println"){
                 obtenerSiguienteToken()
                 if(tokenActual.categoria == Categoria.PARENTESIS_IZQ){
+                    val posicionA= posicionActual
                     obtenerSiguienteToken()
                     var exp1 = esExpresionAritmetica()
                     var exp2 = esExpresionRelacional()
-                    obtenerAnteriorToken()
+
                     if(tokenActual.categoria == Categoria.IDENTIFICADOR || tokenActual.categoria == Categoria.CADENA || exp1 != null || exp2 != null ){
                         var cadena = tokenActual
                         obtenerSiguienteToken()
@@ -628,6 +631,10 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
                             return Impresion(cadena)
                         }
                     }
+                    else{
+                        hacerBT(posicionA)
+                        return null
+                    }
                 }
             }
         }
@@ -639,23 +646,28 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
      */
     fun esRetorno():Retorno?{
         if(tokenActual.categoria == Categoria.PALABRA_RESERVADA && tokenActual.lexema == "return"){
+            val posicionA=posicionActual
             obtenerSiguienteToken()
 
+            var expre= tokenActual
             var expAritmetica = esExpresionAritmetica()
             var expRelacional = esExpresionRelacional()
-            obtenerAnteriorToken()
+            hacerBT(posicionA)
+            if(tokenActual.categoria == Categoria.IDENTIFICADOR){
+                return Retorno(expre)
+            }
 
             if (expAritmetica != null){
                 obtenerSiguienteToken()
                 return Retorno(expAritmetica)
             }
+
+
             if(expRelacional != null){
                 obtenerSiguienteToken()
                 return Retorno(expRelacional)
             }
-            if(tokenActual.categoria == Categoria.IDENTIFICADOR){
-                return Retorno(tokenActual)
-            }
+
 
         }
         return null
@@ -790,7 +802,6 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
                         val bloqueSentencias = esBloqueSentencias()
 
                         if (bloqueSentencias != null) {
-                            obtenerSiguienteToken()
                             return CicloMientras(expresionLogica, bloqueSentencias)
                         } else {
                             reportarError("Faltó el bloque de sentencias en el ciclo mientras")
@@ -836,7 +847,6 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
                                 if (tokenActual.categoria == Categoria.LLAVE_IZQ) {
                                     obtenerSiguienteToken()
                                     listaExpresiones = esListaArgumentos()
-                                    obtenerSiguienteToken()
                                     if (tokenActual.categoria == Categoria.LLAVE_DER) {
                                         obtenerSiguienteToken()
                                     } else {
@@ -874,13 +884,9 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
      * <Incremento> ::= Identificador"++"
      */
     fun esIncremento(): Incremento? {
-        if(tokenActual.categoria == Categoria.OPERADOR_INCREMENTO){
-            obtenerAnteriorToken()
-        }
-
 
         if (tokenActual.categoria == Categoria.IDENTIFICADOR) {
-
+            val posicionA= posicionActual
             val nombre = tokenActual
 
             if (nombre!=null)
@@ -888,10 +894,11 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
                 obtenerSiguienteToken()
                 if (tokenActual.categoria == Categoria.OPERADOR_INCREMENTO) {
                     obtenerSiguienteToken()
-                    obtenerSiguienteToken()
                     return Incremento(nombre)
-                }else {
-                    obtenerAnteriorToken()
+                }
+                else {
+                    hacerBT(posicionA)
+                    return null
                 }
             }else{
                 reportarError("Falta nombre de identificador")
@@ -906,20 +913,24 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
      * <Decremento> ::= Identificador"--"
      */
     fun esDecremento(): Decremento? {
-        if (tokenActual.categoria == Categoria.OPERADOR_DECREMENTO) {
-            obtenerAnteriorToken()
-        }
-
 
         if (tokenActual.categoria == Categoria.IDENTIFICADOR) {
-
+            val posicionA= posicionActual
             val nombre = tokenActual
 
-            obtenerSiguienteToken()
-            if (tokenActual.categoria == Categoria.OPERADOR_DECREMENTO) {
+            if (nombre!=null)
+            {
                 obtenerSiguienteToken()
-                obtenerSiguienteToken()
-                return Decremento(nombre)
+                if (tokenActual.categoria == Categoria.OPERADOR_DECREMENTO) {
+                    obtenerSiguienteToken()
+                    return Decremento(nombre)
+                }
+                else {
+                    hacerBT(posicionA)
+                    return null
+                }
+            }else{
+                reportarError("Falta nombre de identificador")
             }
         }
 
