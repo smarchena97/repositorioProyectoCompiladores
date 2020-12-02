@@ -56,9 +56,9 @@ class ExpresionAritmetica():Expresion() {
      * Funcionamiento dudoso
      */
     override fun obtenerTipo(tablaSimbolos: TablaSimbolos, ambito:String): String {
-        if(expresion1 != null && expresion2!=null){
-            var tipo1 =expresion1!!.obtenerTipo(tablaSimbolos,ambito)
-            var tipo2 =expresion2!!.obtenerTipo(tablaSimbolos,ambito)
+        if(expresion1 != null && expresion2!=null && valorNumerico==null){
+            val tipo1 =expresion1!!.obtenerTipo(tablaSimbolos,ambito)
+            val tipo2 =expresion2!!.obtenerTipo(tablaSimbolos,ambito)
 
             if(tipo1 == "numR" || tipo2 == "numR"){
                 return "numR"
@@ -67,39 +67,40 @@ class ExpresionAritmetica():Expresion() {
             }
 
         }
-        else if(expresion1 != null && expresion2==null){
-            var tipo1 =expresion1!!.obtenerTipo(tablaSimbolos,ambito)
-            return tipo1
+        else if(expresion1 != null ){
+            return expresion1!!.obtenerTipo(tablaSimbolos,ambito)
         }
-        else if(valorNumerico != null && expresion2 != null){
+        else if(valorNumerico != null && expresion1 != null ) {
 
-            var tipo2 =expresion2!!.obtenerTipo(tablaSimbolos,ambito)
-            if(valorNumerico!!.valor.categoria == Categoria.ENTERO && tipo2 == "numZ"){
-                return "numZ"
-            }else {
-                return tipo2
-            }
-            if (valorNumerico!!.valor.categoria != Categoria.DECIMAL) {
-                var simbolo = tablaSimbolos.buscarSimboloValor(valorNumerico!!.valor.lexema,ambito)
-                if(simbolo != null){
-                    if(simbolo.tipo == "numZ" && tipo2 != "numR") {
-                        return simbolo.tipo
-                    }else{
-                        return tipo2
-                    }
-                }
+            var tipo1 = ""
+
+            if (valorNumerico!!.valor.categoria == Categoria.ENTERO) {
+                tipo1 = "numZ"
+            } else if (valorNumerico!!.valor.categoria == Categoria.DECIMAL) {
+                tipo1 = "numR"
             } else {
-                return "numR"
+                val simbolo = tablaSimbolos.buscarSimboloValor(valorNumerico!!.valor.lexema, ambito)
+                if (simbolo != null) {
+                    tipo1 = simbolo.tipo
+                }
             }
-        }
-        if(valorNumerico != null ) {
+
+            val tipo2 = expresion2!!.obtenerTipo(tablaSimbolos, ambito)
+
+            if (tipo1 == "numR" || tipo2 == "numR") {
+                return "numR"
+            } else {
+                return "numZ"
+            }
+
+        } else if(valorNumerico != null ) {
 
             if(valorNumerico!!.valor.categoria == Categoria.ENTERO ){
                 return "numZ"
             }else if(valorNumerico!!.valor.categoria == Categoria.DECIMAL){
                 return "numR"
             }else{
-                var simbolo = tablaSimbolos.buscarSimboloValor(valorNumerico!!.valor.lexema,ambito)
+                val simbolo = tablaSimbolos.buscarSimboloValor(valorNumerico!!.valor.lexema,ambito)
                 if(simbolo != null){
                     return simbolo.tipo
                 }

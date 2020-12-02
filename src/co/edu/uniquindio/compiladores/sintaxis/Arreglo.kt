@@ -5,19 +5,19 @@ import co.edu.uniquindio.compiladores.lexico.Token
 import co.edu.uniquindio.compiladores.semantica.TablaSimbolos
 import javafx.scene.control.TreeItem
 
-class Arreglo (var nombreArreglo: Token, var tipoDato:Token, var listaDatos: ArrayList<Argumento>? ):Sentencia(){
+class Arreglo (var nombreArreglo: Token, var tipoDato:Token, var listaDatos: ArrayList<Expresion> ):Sentencia(){
 
     override fun toString(): String {
         return "Arreglo(nombreArreglo=$nombreArreglo, tipoDato=$tipoDato, listaDatos=$listaDatos)"
     }
 
     override fun getArbolVisual(): TreeItem<String> {
-        var raiz = TreeItem<String>("Nombre Arreglo")
+        val raiz = TreeItem<String>("Nombre Arreglo")
         raiz.children.add(TreeItem(nombreArreglo.lexema))
-        var raizTipoDato= TreeItem("Tipo Dato")
+        val raizTipoDato= TreeItem("Tipo Dato")
         raizTipoDato.children.add(TreeItem(tipoDato.lexema))
         raiz.children.add(raizTipoDato)
-        var raizListaDatos= TreeItem("Lista Datos")
+        val raizListaDatos= TreeItem("Lista Datos")
 
         for(i in listaDatos!!){
             raizListaDatos.children.add(i.getArbolVisual())
@@ -32,5 +32,10 @@ class Arreglo (var nombreArreglo: Token, var tipoDato:Token, var listaDatos: Arr
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, listaErrores: ArrayList<Error>, ambito: String) {
 
+        for(s in listaDatos){
+            if (s.obtenerTipo(tablaSimbolos,ambito) != tipoDato.lexema){
+                listaErrores.add(Error("El tipo de dato de la expresión no coincide con el tipo de dato del arreglo", nombreArreglo.fila, nombreArreglo.columna))
+            }
+        }
     }
 }

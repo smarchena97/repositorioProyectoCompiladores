@@ -299,7 +299,7 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
     /**
      * <Expresion> ::= <ExpresionLogica> |<ExpresionRelacional> |<ExpresionAritmetica> | <ExpresionCadena>
      */
-    fun esExpresion():Expresion?{
+    fun esExpresion():Expresion{
         var e:Expresion? = esExpresionAritmetica()
         if(e != null){
             return e
@@ -314,18 +314,17 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
         }
 
         e = esExpresionCadena()
-        return e
+        return e!!
     }
 
     /**
-     * <ExpresionAritmetica> ::= "("<ExpresionAritmetica>")"[operadorAritmetico<ExpreisonAritmetica>] | <valorNumerico>[operadorAritmetico<expreisonAritmetica>]
+     * <ExpresionAritmetica> ::= "("<ExpresionAritmetica>")"[operadorAritmetico<ExpresionAritmetica>] | <valorNumerico>[operadorAritmetico<expreisonAritmetica>]
      */
     fun esExpresionAritmetica():ExpresionAritmetica?{
         if (tokenActual.categoria == Categoria.PARENTESIS_IZQ){
             obtenerSiguienteToken()
             val expresion1 = esExpresionAritmetica()
             if(expresion1 != null){
-
                 if(tokenActual.categoria == Categoria.PARENTESIS_DER){
                     obtenerSiguienteToken()
                     if(tokenActual.categoria == Categoria.OPERADOR_ARITMETICO){
@@ -486,6 +485,9 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
         return null
     }
 
+    /**
+     * <ValorNumerico> ::= [<Signo>] numR | [<Signo>] numZ | [<Signo>] identificador
+     */
     fun esValorNumerico():ValorNumerico?{
         var signo:Token?=null
         if(tokenActual.categoria == Categoria.OPERADOR_ARITMETICO && (tokenActual.lexema == "+" || tokenActual.lexema == "-")){
@@ -821,7 +823,7 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
 
 
     /**
-     *  <Arreglo> ::= array ”[“ TipoDato “]” identificador: [“<” <ListaArgumentos> “>”].
+     *  <Arreglo> ::= array ”[“ TipoDato “]” identificador ":" [“<” <ListaArgumentos> “>”] "."
      */
     fun esArreglo(): Arreglo? {
 
@@ -840,13 +842,22 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
                         if (tokenActual.categoria == Categoria.IDENTIFICADOR) {
                             val nombreArreglo = tokenActual
                             obtenerSiguienteToken()
-                            var listaExpresiones = ArrayList<Argumento>()
+                            var listaExpresiones = ArrayList<Expresion>()
 
                             if (tokenActual.categoria == Categoria.OPERADOR_ASIGNACION && tokenActual.lexema == ":") {
                                 obtenerSiguienteToken()
                                 if (tokenActual.categoria == Categoria.LLAVE_IZQ) {
                                     obtenerSiguienteToken()
-                                    listaExpresiones = esListaArgumentos()
+                                    var expresion = esExpresion()
+                                    while (expresion != null)
+                                    {
+                                        listaExpresiones.add(expresion)
+                                        if (tokenActual.categoria == Categoria.COMA) {
+                                            obtenerSiguienteToken()
+                                            expresion = esExpresion()
+                                        }
+                                        else{ break }
+                                    }
                                     if (tokenActual.categoria == Categoria.LLAVE_DER) {
                                         obtenerSiguienteToken()
                                     } else {
