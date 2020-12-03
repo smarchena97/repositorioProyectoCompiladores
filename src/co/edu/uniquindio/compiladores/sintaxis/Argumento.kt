@@ -11,4 +11,5 @@ class Argumento(var nombre: Token) {
     fun getArbolVisual(): TreeItem<String> {
         return TreeItem("${nombre.lexema}")
     }
+
 }

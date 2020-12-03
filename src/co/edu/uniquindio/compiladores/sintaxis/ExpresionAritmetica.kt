@@ -1,11 +1,12 @@
 package co.edu.uniquindio.compiladores.sintaxis
 
 import co.edu.uniquindio.compiladores.lexico.Categoria
+import co.edu.uniquindio.compiladores.lexico.Error
 import co.edu.uniquindio.compiladores.lexico.Token
 import co.edu.uniquindio.compiladores.semantica.TablaSimbolos
 import javafx.scene.control.TreeItem
 
-@Suppress("UNREACHABLE_CODE")
+
 class ExpresionAritmetica():Expresion() {
     var expresion1:ExpresionAritmetica? = null
     var operador:Token? = null
@@ -55,37 +56,24 @@ class ExpresionAritmetica():Expresion() {
     /**
      * Funcionamiento dudoso
      */
-    override fun obtenerTipo(tablaSimbolos: TablaSimbolos, ambito:String): String {
+    override fun obtenerTipo(tablaSimbolos: TablaSimbolos, ambito:String, listaErrores: ArrayList<Error>): String {
         if(expresion1 != null && expresion2!=null && valorNumerico==null){
-            val tipo1 =expresion1!!.obtenerTipo(tablaSimbolos,ambito)
-            val tipo2 =expresion2!!.obtenerTipo(tablaSimbolos,ambito)
+            val tipo1 =expresion1!!.obtenerTipo(tablaSimbolos,ambito, listaErrores)
+            val tipo2 =expresion2!!.obtenerTipo(tablaSimbolos,ambito, listaErrores)
 
             if(tipo1 == "numR" || tipo2 == "numR"){
                 return "numR"
             }else{
                 return "numZ"
             }
-
         }
         else if(expresion1 != null ){
-            return expresion1!!.obtenerTipo(tablaSimbolos,ambito)
+            return expresion1!!.obtenerTipo(tablaSimbolos,ambito, listaErrores)
         }
         else if(valorNumerico != null && expresion1 != null ) {
 
-            var tipo1 = ""
-
-            if (valorNumerico!!.valor.categoria == Categoria.ENTERO) {
-                tipo1 = "numZ"
-            } else if (valorNumerico!!.valor.categoria == Categoria.DECIMAL) {
-                tipo1 = "numR"
-            } else {
-                val simbolo = tablaSimbolos.buscarSimboloValor(valorNumerico!!.valor.lexema, ambito)
-                if (simbolo != null) {
-                    tipo1 = simbolo.tipo
-                }
-            }
-
-            val tipo2 = expresion2!!.obtenerTipo(tablaSimbolos, ambito)
+            var tipo1 = obtenerTipoCampo(valorNumerico,tablaSimbolos,ambito,listaErrores)
+            val tipo2 = expresion1!!.obtenerTipo(tablaSimbolos, ambito, listaErrores)
 
             if (tipo1 == "numR" || tipo2 == "numR") {
                 return "numR"
@@ -94,19 +82,25 @@ class ExpresionAritmetica():Expresion() {
             }
 
         } else if(valorNumerico != null ) {
-
-            if(valorNumerico!!.valor.categoria == Categoria.ENTERO ){
-                return "numZ"
-            }else if(valorNumerico!!.valor.categoria == Categoria.DECIMAL){
-                return "numR"
-            }else{
-                val simbolo = tablaSimbolos.buscarSimboloValor(valorNumerico!!.valor.lexema,ambito)
-                if(simbolo != null){
-                    return simbolo.tipo
-                }
-            }
+            obtenerTipoCampo(valorNumerico, tablaSimbolos, ambito, listaErrores)
         }
         return ""
     }
 
+    fun obtenerTipoCampo(valorNumerico: ValorNumerico? , tablaSimbolos: TablaSimbolos, ambito:String, listaErrores: ArrayList<Error>):String
+    {
+        if(valorNumerico!!.valor.categoria == Categoria.ENTERO ){
+            return "numZ"
+        }else if(valorNumerico!!.valor.categoria == Categoria.DECIMAL){
+            return "numR"
+        }else{
+            val simbolo = tablaSimbolos.buscarSimboloValor(valorNumerico!!.valor.lexema,ambito)
+            if(simbolo != null){
+                return simbolo.tipo
+            }else{
+                listaErrores.add(Error("El campo ${valorNumerico!!.valor.lexema} no existe dentro del ambito $ambito", valorNumerico!!.valor.fila, valorNumerico!!.valor.columna))
+            }
+        }
+        return ""
+    }
 }

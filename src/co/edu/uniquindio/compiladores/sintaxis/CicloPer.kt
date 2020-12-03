@@ -28,4 +28,10 @@ class CicloPer(var variableControl:Token,var indice:Token,var listaSentencia: Ar
         }
     }
 
+    override fun analizarSemantica(tablaSimbolos: TablaSimbolos, listaErrores: ArrayList<Error>, ambito: String) {
+        for (s in listaSentencia) {
+            s.analizarSemantica(tablaSimbolos, listaErrores, ambito)
+        }
+    }
+
 }

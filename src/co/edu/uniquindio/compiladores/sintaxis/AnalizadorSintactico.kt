@@ -299,7 +299,7 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
     /**
      * <Expresion> ::= <ExpresionLogica> |<ExpresionRelacional> |<ExpresionAritmetica> | <ExpresionCadena>
      */
-    fun esExpresion():Expresion{
+    fun esExpresion(): Expresion? {
         var e:Expresion? = esExpresionAritmetica()
         if(e != null){
             return e
@@ -314,7 +314,10 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
         }
 
         e = esExpresionCadena()
-        return e!!
+        if(e != null)
+            return e
+
+        return e
     }
 
     /**
@@ -576,15 +579,27 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
             val posicionA= posicionActual
             obtenerSiguienteToken()
             if(tokenActual.categoria == Categoria.OPERADOR_ASIGNACION){
+                var operador = tokenActual
                 obtenerSiguienteToken()
                 var exp = esExpresion()
+                var inv = esInvocacion()
                 if(exp != null){
 
                     if(tokenActual.categoria == Categoria.FINDESENTENCIA){
                         obtenerSiguienteToken()
-                        return Asignacion(identi,exp)
+                        return Asignacion(identi,operador,exp)
                     }else{
                         reportarError("Falta simbolo de fin de sentencia")
+                    }
+                }else
+                {
+                    if (inv != null){
+                        if(tokenActual.categoria == Categoria.FINDESENTENCIA){
+                            obtenerSiguienteToken()
+                            return Asignacion(identi,operador,inv)
+                        }else{
+                            reportarError("Falta simbolo de fin de sentencia")
+                        }
                     }
                 }
             }else {
@@ -596,8 +611,6 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
                     hacerBT(posicionA)
                     return null
                 }
-                reportarError("Falta operador de asignacion")
-
             }
         }
         return null
@@ -843,7 +856,6 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
                             val nombreArreglo = tokenActual
                             obtenerSiguienteToken()
                             var listaExpresiones = ArrayList<Expresion>()
-
                             if (tokenActual.categoria == Categoria.OPERADOR_ASIGNACION && tokenActual.lexema == ":") {
                                 obtenerSiguienteToken()
                                 if (tokenActual.categoria == Categoria.LLAVE_IZQ) {

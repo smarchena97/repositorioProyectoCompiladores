@@ -1,6 +1,8 @@
 package co.edu.uniquindio.compiladores.sintaxis
 
+import co.edu.uniquindio.compiladores.lexico.Error
 import co.edu.uniquindio.compiladores.lexico.Token
+import co.edu.uniquindio.compiladores.semantica.TablaSimbolos
 import javafx.scene.control.TreeItem
 
 class Invocacion(var nombreFuncion: Token, var listaArgumentos: ArrayList<Argumento>?): Sentencia() {
@@ -20,6 +22,9 @@ class Invocacion(var nombreFuncion: Token, var listaArgumentos: ArrayList<Argume
 
         raiz.children.add(raizArgumentos)
         return  raiz
+    }
+
+    override fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, listaErrores: ArrayList<Error>, ambito: String) {
     }
 
 

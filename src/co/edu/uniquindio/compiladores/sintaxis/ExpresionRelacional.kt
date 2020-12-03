@@ -1,5 +1,6 @@
 package co.edu.uniquindio.compiladores.sintaxis
 
+import co.edu.uniquindio.compiladores.lexico.Error
 import co.edu.uniquindio.compiladores.lexico.Token
 import co.edu.uniquindio.compiladores.semantica.TablaSimbolos
 import javafx.scene.control.TreeItem
@@ -39,7 +40,7 @@ class ExpresionRelacional():Expresion() {
         return raiz
     }
 
-    override fun obtenerTipo(tabalSimbolos: TablaSimbolos, ambito:String): String {
+    override fun obtenerTipo(tabalSimbolos: TablaSimbolos, ambito:String, listaErrores: ArrayList<Error>): String {
         return "bool"
     }
 

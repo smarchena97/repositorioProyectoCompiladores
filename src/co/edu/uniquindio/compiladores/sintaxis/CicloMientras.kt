@@ -1,8 +1,10 @@
 package co.edu.uniquindio.compiladores.sintaxis
 
+import co.edu.uniquindio.compiladores.lexico.Error
+import co.edu.uniquindio.compiladores.semantica.TablaSimbolos
 import javafx.scene.control.TreeItem
 
-class CicloMientras (var expresionLogica: ExpresionLogica, var listaSentencia: ArrayList<Sentencia>?): Sentencia() {
+class CicloMientras (var expresionLogica: ExpresionLogica, var listaSentencia: ArrayList<Sentencia>): Sentencia() {
 
     override fun toString(): String {
         return "CicloMientras(expresionLogica=$expresionLogica, listaSentencias=$listaSentencia)"
@@ -17,11 +19,23 @@ class CicloMientras (var expresionLogica: ExpresionLogica, var listaSentencia: A
 
         var raizSentencias = TreeItem("Sentencias")
 
-        for (i in listaSentencia!!) {
+        for (i in listaSentencia) {
             raizSentencias.children.add(i.getArbolVisual())
         }
         raiz.children.add(raizSentencias)
         return raiz
+    }
+
+    override fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, listaErrores: ArrayList<Error>, ambito: String) {
+        for (s in listaSentencia) {
+            s.llenarTablaSimbolos(tablaSimbolos, listaErrores, ambito)
+        }
+    }
+
+    override fun analizarSemantica(tablaSimbolos: TablaSimbolos, listaErrores: ArrayList<Error>, ambito: String) {
+        for (s in listaSentencia) {
+            s.analizarSemantica(tablaSimbolos, listaErrores, ambito)
+        }
     }
 
 }

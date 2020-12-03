@@ -31,10 +31,10 @@ class Arreglo (var nombreArreglo: Token, var tipoDato:Token, var listaDatos: Arr
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, listaErrores: ArrayList<Error>, ambito: String) {
-
         for(s in listaDatos){
-            if (s.obtenerTipo(tablaSimbolos,ambito) != tipoDato.lexema){
-                listaErrores.add(Error("El tipo de dato de la expresión no coincide con el tipo de dato del arreglo", nombreArreglo.fila, nombreArreglo.columna))
+            var tipo= s.obtenerTipo(tablaSimbolos,ambito, listaErrores)
+            if (tipo != tipoDato.lexema){
+                listaErrores.add(Error("El tipo de dato de la expresión ($tipo) no coincide con el tipo de dato del arreglo (${tipoDato.lexema})", nombreArreglo.fila, nombreArreglo.columna))
             }
         }
     }

@@ -60,4 +60,15 @@ class Decision():Sentencia() {
         }
     }
 
+    override fun analizarSemantica(tablaSimbolos: TablaSimbolos, listaErrores: ArrayList<Error>, ambito: String) {
+        for (s in listaSentencia!!) {
+            s.analizarSemantica(tablaSimbolos, listaErrores, ambito)
+        }
+        if (listaSentenciaAltro != null) {
+            for (s in listaSentenciaAltro!!) {
+                s.analizarSemantica(tablaSimbolos, listaErrores, ambito)
+            }
+        }
+    }
+
 }
