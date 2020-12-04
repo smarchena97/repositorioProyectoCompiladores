@@ -14,4 +14,8 @@ class Incremento(var nombre: Token): Sentencia() {
         raiz.children.add(TreeItem("${nombre.lexema} ++"))
         return raiz
     }
+
+    override fun getJavaCode(): String {
+        return nombre.lexema + "++;"
+    }
 }

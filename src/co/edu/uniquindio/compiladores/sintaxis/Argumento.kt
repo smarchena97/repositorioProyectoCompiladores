@@ -13,5 +13,8 @@ class Argumento(var nombre: Token): Expresion() {
         return TreeItem(nombre.lexema)
     }
 
+    override fun getJavaCode():String{
+        return nombre.lexema
+    }
 
 }

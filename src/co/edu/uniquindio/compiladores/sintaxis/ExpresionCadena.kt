@@ -65,4 +65,19 @@ class ExpresionCadena():Expresion() {
             expresionCadena!!.analizarSemantica(tablaSimbolos, listaErrores, ambito)
         }
     }
+
+    override fun getJavaCode(): String {
+        var codigo = token1!!.getJavaCode()+""
+
+        if (token1 != null && token2 != null && expresionCadena == null) {
+            codigo += "+"+token2!!.getJavaCode()
+        }
+        if (token1 != null && token2 != null && expresionCadena != null) {
+            codigo += "+"+token2!!.getJavaCode()+"+"+expresionCadena!!.getJavaCode()
+        }
+        if (token1 != null && token2 == null && expresionCadena != null) {
+            codigo += "+"+expresionCadena!!.getJavaCode()
+        }
+        return codigo
+    }
 }

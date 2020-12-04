@@ -13,5 +13,4 @@ class Variable(var nombreVariable: Token){
         return TreeItem(nombreVariable.lexema)
     }
 
-
 }

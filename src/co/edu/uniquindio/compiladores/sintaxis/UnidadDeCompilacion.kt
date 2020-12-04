@@ -29,4 +29,14 @@ class UnidadDeCompilacion(var listaFunciones: ArrayList<Funcion>) {
             f.analizarSemantica(tablaSimbolos,listaErrores)
         }
     }
+
+    fun getJavaCode():String{
+        var codigo = "import javax.swing.JOptionPane; public class Principal{"
+        for(f in listaFunciones){
+            codigo += f.getJavaCode()
+        }
+        codigo  += "}"
+
+        return codigo
+    }
 }

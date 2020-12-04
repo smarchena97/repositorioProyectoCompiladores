@@ -5,7 +5,7 @@ import co.edu.uniquindio.compiladores.lexico.Token
 import co.edu.uniquindio.compiladores.semantica.TablaSimbolos
 import javafx.scene.control.TreeItem
 
-class DeclaracionVariable(var tipoVariable:Token, var listaVariables:ArrayList<Variable>, var tipoDato:Token):Sentencia() {
+class DeclaracionVariable(var tipoVariable:Token, var listaVariables:ArrayList<Variable>, var tipoDato:Token, var asignacion: Asignacion?):Sentencia() {
     override fun toString(): String {
         return "DeclaracionVariable(tipoVariable=$tipoVariable, listaVariables=$listaVariables, tipoDato=$tipoDato)"
     }
@@ -30,5 +30,19 @@ class DeclaracionVariable(var tipoVariable:Token, var listaVariables:ArrayList<V
         /*for (v in listaVariables) {
             analizarSemantica(tablaSimbolos, listaErrores, ambito)
         }*/
+    }
+
+    override fun getJavaCode(): String {
+        var codigo = ""
+        if(listaVariables != null) {
+            codigo = tipoDato!!.getJavaCode() + " "
+            for (ls in listaVariables!!){
+                codigo += ls.nombreVariable.getJavaCode()+","
+            }
+            codigo = codigo.substring(0,codigo.length-1)+";"
+        }else{
+            codigo =  tipoDato!!.getJavaCode() + " " + asignacion!!.getJavaCode()
+        }
+        return codigo
     }
 }

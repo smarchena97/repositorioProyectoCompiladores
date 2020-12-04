@@ -40,5 +40,15 @@ class Invocacion(var nombreFuncion: Token, var listaArgumentos: ArrayList<Expres
         }
     }
 
+    override fun getJavaCode(): String {
+        var codigo = nombreFuncion.lexema+"("
+        for(a in listaArgumentos!!){
+            codigo += a.getJavaCode()+","
+        }
+        codigo = codigo.substring(0,codigo.length-1)
+        codigo += ");"
+        return codigo
+    }
+
 
 }

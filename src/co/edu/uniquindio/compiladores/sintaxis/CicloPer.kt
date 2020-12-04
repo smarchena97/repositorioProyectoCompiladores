@@ -5,7 +5,7 @@ import co.edu.uniquindio.compiladores.lexico.Token
 import co.edu.uniquindio.compiladores.semantica.TablaSimbolos
 import javafx.scene.control.TreeItem
 
-class CicloPer(var variableControl:Token,var indice:Token,var listaSentencia: ArrayList<Sentencia>): Sentencia() {
+class CicloPer(var tipoDato:Token, var variableControl:Token,var indice:Token,var listaSentencia: ArrayList<Sentencia>): Sentencia() {
 
     override fun getArbolVisual(): TreeItem<String> {
         var raiz = TreeItem("CicloPer")
@@ -32,6 +32,15 @@ class CicloPer(var variableControl:Token,var indice:Token,var listaSentencia: Ar
         for (s in listaSentencia) {
             s.analizarSemantica(tablaSimbolos, listaErrores, ambito)
         }
+    }
+
+    override fun getJavaCode(): String {
+        var  codigo = "for("+tipoDato.getJavaCode()+" "+variableControl.lexema+":"+indice.lexema+"){"
+        for(s in listaSentencia){
+            codigo += s.getJavaCode()
+        }
+        codigo +="}"
+        return codigo
     }
 
 }

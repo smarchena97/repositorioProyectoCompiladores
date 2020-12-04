@@ -55,4 +55,22 @@ class ExpresionLogica():Expresion() {
         return "bool"
     }
 
+    override fun getJavaCode(): String {
+        var codigo = ""
+        if(expR == null && expL1 == null && expL2 == null && operadorL == null && valorLogico != null){
+            codigo = valorLogico!!.getJavaCode()
+        }
+        if(expR != null && expL1 == null && expL2 == null && operadorL == null && valorLogico == null){
+            codigo = expR!!.getJavaCode()
+        }
+        if(expR == null && expL1 == null && expL2 != null && operadorL != null && valorLogico != null){
+            codigo = expL2!!.getJavaCode()+" "+operadorL!!.lexema+" "+valorLogico
+        }
+        if(expR != null && expL1 == null && expL2 != null && operadorL != null && valorLogico == null){
+            codigo = expR!!.getJavaCode() + " " +operadorL+ " " + expL2!!.getJavaCode()
+        }
+
+        return codigo
+    }
+
 }

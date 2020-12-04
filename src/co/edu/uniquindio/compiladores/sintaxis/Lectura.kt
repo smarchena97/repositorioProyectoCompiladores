@@ -26,4 +26,8 @@ class Lectura(var cadena:Token):Sentencia() {
                 )
             }
     }
+
+    override fun getJavaCode(): String {
+        return "JOptionPane.showInputDialog(" +cadena.getJavaCode()+")"
+    }
 }

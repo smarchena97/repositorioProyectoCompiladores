@@ -107,7 +107,7 @@ class ExpresionAritmetica():Expresion() {
             {
                 var simbolo=tablaSimbolos.buscarSimboloValor(valorNumerico!!.valor.lexema, ambito)
                 if (simbolo == null){
-                    if(simbolo.tipo == Categoria.ENTERO.name)
+                    //if(simbolo.tipo == Categoria.ENTERO.name)
                     // capturar el simbolo.tipo y preguntar si es numerico
                     listaErrores.add(
                         Error( "El campo (${valorNumerico!!.valor.lexema}) no existe dentro del ambito ($ambito)",
@@ -124,5 +124,23 @@ class ExpresionAritmetica():Expresion() {
         if (expresion2!=null) {
             expresion2!!.analizarSemantica(tablaSimbolos, listaErrores, ambito)
         }
+    }
+
+    override fun getJavaCode(): String {
+
+        var codigo = ""
+        if(valorNumerico != null && operador == null){
+            codigo = valorNumerico!!.getJavaCode()
+        }
+        if(valorNumerico != null && operador != null && expresion2 != null){
+            codigo = valorNumerico!!.getJavaCode()+""+operador!!.lexema+""+ expresion2!!.getJavaCode()
+        }
+        if(expresion1 != null && expresion2==null){
+            codigo = expresion1!!.getJavaCode()
+        }
+        if(expresion1 != null && expresion2!=null){
+            codigo = expresion1!!.getJavaCode()+""+operador!!.lexema+""+expresion2!!.getJavaCode()
+        }
+        return codigo
     }
 }

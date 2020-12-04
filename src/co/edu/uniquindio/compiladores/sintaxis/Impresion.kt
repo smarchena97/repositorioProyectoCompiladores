@@ -7,17 +7,14 @@ import co.edu.uniquindio.compiladores.semantica.TablaSimbolos
 import javafx.scene.control.TreeItem
 
 class Impresion():Sentencia() {
-    var expresionAritmetica:ExpresionAritmetica? = null
-    var expresionRelacional:ExpresionRelacional? = null
+
+    var expresion:Expresion? = null
     var identificador:Token? = null
     var cadena:Token? = null
 
-    constructor(expresionAritmetica: ExpresionAritmetica?):this(){
-        this.expresionAritmetica = expresionAritmetica
-    }
 
-    constructor(expresionRelacional: ExpresionRelacional?):this(){
-        this.expresionRelacional = expresionRelacional
+    constructor(e:Expresion):this(){
+        expresion = e
     }
 
     constructor(token:Token):this(){
@@ -34,11 +31,8 @@ class Impresion():Sentencia() {
         if(cadena != null){
             raiz.children.add(TreeItem("Cadena:${cadena!!.lexema}"))
         }
-        if(expresionAritmetica != null){
-            raiz.children.add(expresionAritmetica!!.getArbolVisual())
-        }
-        if(expresionRelacional != null){
-            raiz.children.add(expresionRelacional!!.getArbolVisual())
+        if(expresion != null){
+            raiz.children.add(expresion!!.getArbolVisual())
         }
         if(identificador != null){
             raiz.children.add(TreeItem("Identificador:${identificador!!.lexema}"))
@@ -47,8 +41,7 @@ class Impresion():Sentencia() {
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, listaErrores: ArrayList<Error>, ambito: String) {
-        expresionAritmetica!!.analizarSemantica(tablaSimbolos, listaErrores, ambito)
-        expresionRelacional!!.analizarSemantica(tablaSimbolos, listaErrores, ambito)
+        expresion!!.analizarSemantica(tablaSimbolos, listaErrores, ambito)
 
         var s= tablaSimbolos.buscarSimboloValor(identificador!!.lexema, ambito)
         if (s==null) {
@@ -65,6 +58,20 @@ class Impresion():Sentencia() {
             )
         }
 
+    }
+
+    override fun getJavaCode(): String {
+        var codigo = ""
+        if(cadena != null){
+            codigo = "JOptionPane.showMessageDialog(null,"+cadena!!.getJavaCode()+");"
+        }
+        if(identificador != null){
+            codigo = "JOptionPane.showMessageDialog(null,"+identificador!!.getJavaCode()+");"
+        }
+        if(expresion != null){
+            codigo = "JOptionPane.showMessageDialog(null,"+expresion!!.getJavaCode()+");"
+        }
+        return codigo
     }
 
 }

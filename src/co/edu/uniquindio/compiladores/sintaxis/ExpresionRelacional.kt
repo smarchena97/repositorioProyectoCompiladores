@@ -54,4 +54,19 @@ class ExpresionRelacional():Expresion() {
         }
     }
 
+    override fun getJavaCode(): String {
+        var codigo = ""
+        if(expresionC1 != null && operadorRelacional != null && expresionC2 !=null){
+            if(operadorRelacional!!.lexema == "¬:"){
+                codigo = "!"+"("+expresionC1!!.getJavaCode()+").equals("+expresionC2!!.getJavaCode()+")"
+            }else if(operadorRelacional!!.lexema == "::"){
+                codigo = "("+expresionC1!!.getJavaCode()+").equals("+expresionC2!!.getJavaCode()+")"
+            }
+        }
+        if(expresionA1 != null && operadorRelacional != null && expresionA2 !=null){
+            codigo = expresionA1!!.getJavaCode()+operadorRelacional!!.getJavaCode()+expresionA2!!.getJavaCode()
+        }
+        return codigo
+    }
+
 }

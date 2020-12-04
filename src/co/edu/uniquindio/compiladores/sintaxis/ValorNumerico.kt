@@ -23,5 +23,17 @@ class ValorNumerico(var signo:Token?, var valor:Token) {
         return "ValorNumerico(signo=$signo, valor=$valor)"
     }
 
+    fun getJavaCode():String{
+        var codigo = ""
+
+        if(signo != null && valor != null) {
+            codigo = signo!!.getJavaCode() + "" + valor.getJavaCode()
+        }
+        if(signo == null && valor != null){
+            codigo = ""+valor.getJavaCode()
+        }
+        return codigo
+    }
+
 
 }

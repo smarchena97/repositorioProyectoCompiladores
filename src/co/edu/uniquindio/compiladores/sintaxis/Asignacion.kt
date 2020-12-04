@@ -61,5 +61,15 @@ class Asignacion(var identificador:Token , var operadorAsignacion: Token):Senten
         }
     }
 
+    override fun getJavaCode(): String {
+        var codigo = ""
+        if(expresion != null) {
+            codigo = identificador.getJavaCode() + " = " + expresion!!.getJavaCode() + ";"
+        }else if (invocacion  != null){
+            codigo = identificador.getJavaCode() + " = " + invocacion!!.getJavaCode() + ";"
+        }
+        return codigo
+    }
+
 
 }

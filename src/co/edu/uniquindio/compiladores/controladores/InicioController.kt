@@ -5,12 +5,14 @@ import co.edu.uniquindio.compiladores.lexico.Token
 import co.edu.uniquindio.compiladores.lexico.Error
 import co.edu.uniquindio.compiladores.semantica.AnalizadorSemantico
 import co.edu.uniquindio.compiladores.sintaxis.AnalizadorSintactico
+import co.edu.uniquindio.compiladores.sintaxis.UnidadDeCompilacion
 import javafx.collections.FXCollections
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.control.*
 import javafx.scene.control.cell.PropertyValueFactory
+import java.io.File
 import java.net.URL
 import java.util.*
 
@@ -46,6 +48,11 @@ class InicioController: Initializable {
 
     @FXML lateinit var arbolVisual:TreeView<String>
 
+    private var lexico:AnalizadorLexico? = null
+    private var sintactico:AnalizadorSintactico? = null
+    private var semantica:AnalizadorSemantico? = null
+    private var uc: UnidadDeCompilacion? = null
+
     /**
      * Construye las tablas de la interfaz grafica
      */
@@ -68,23 +75,23 @@ class InicioController: Initializable {
     fun analizarCodigo(e: ActionEvent) {
 
         if (codigoFuente.text.length > 0) {
-            val lexico = AnalizadorLexico(codigoFuente.text)
-            lexico.analizar()
+            lexico = AnalizadorLexico(codigoFuente.text)
+            lexico!!.analizar()
 
-            var sintactico = AnalizadorSintactico(lexico.listaTokens)
-            sintactico.esUnidadDeCompilacion()
+            sintactico = AnalizadorSintactico(lexico!!.listaTokens)
+            sintactico!!.esUnidadDeCompilacion()
 
-            tablaTokens.items = FXCollections.observableArrayList(lexico.listaTokens)
-            tablaErrores.items = FXCollections.observableArrayList(sintactico.listaErrores)
+            tablaTokens.items = FXCollections.observableArrayList(lexico!!.listaTokens)
+            tablaErrores.items = FXCollections.observableArrayList(sintactico!!.listaErrores)
 
 
 
-            if (lexico.listaErrores.isEmpty()) {
+            if (lexico!!.listaErrores.isEmpty()) {
 
-                val sintaxis = AnalizadorSintactico(lexico.listaTokens)
-                val uc = sintaxis.esUnidadDeCompilacion()
+                val sintaxis = AnalizadorSintactico(lexico!!.listaTokens)
+                uc = sintaxis.esUnidadDeCompilacion()
                 if (uc != null) {
-                    arbolVisual.root = uc.getArbolVisual()
+                    arbolVisual.root = uc!!.getArbolVisual()
                     val semantica = AnalizadorSemantico(uc!!)
                     semantica.llenarTablaSimbolos()
                     semantica.analizarSemantica()
@@ -97,6 +104,27 @@ class InicioController: Initializable {
                 alerta.contentText = "Hay errores en el codigo fuente"
             }
         }
+    }
+
+    @FXML
+    fun traducirCodigo(e:ActionEvent){
+
+        if(lexico!!.listaErrores.isEmpty() && sintactico!!.listaErrores.isEmpty() ){
+            val codigo =uc!!.getJavaCode()
+            File("src/Principal.java").writeText(codigo)
+
+            val runtime = Runtime.getRuntime().exec("javac src/Principal.java")
+            runtime.waitFor()
+            Runtime.getRuntime().exec("java Principal",null, File("src"))
+
+
+        }else{
+            var alerta = Alert(Alert.AlertType.WARNING)
+            alerta.headerText = "Mensaje"
+            alerta.contentText = "El codigo no se puede traducir por que hay errores"
+            alerta.show()
+        }
+
     }
 
 }

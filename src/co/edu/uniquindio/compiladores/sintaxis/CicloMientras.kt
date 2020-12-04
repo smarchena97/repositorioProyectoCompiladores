@@ -39,4 +39,14 @@ class CicloMientras (var expresionLogica: ExpresionLogica, var listaSentencia: A
         }
     }
 
+    override fun getJavaCode(): String {
+        var codigo = "while("+expresionLogica!!.getJavaCode()+"){"
+
+        for( s in listaSentencia){
+            codigo += s.getJavaCode()
+        }
+
+        codigo += "}"
+        return codigo
+    }
 }

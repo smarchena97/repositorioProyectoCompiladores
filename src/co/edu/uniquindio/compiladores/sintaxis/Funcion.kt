@@ -58,4 +58,30 @@ class Funcion(var nombreFuncion:Token, var tipoRetorno:Token, var listaParametro
         }
 
     }
+
+    fun getJavaCode():String{
+
+        var codigo = ""
+        if(nombreFuncion.lexema == "principale"){
+            codigo = "public static void main(String[] args){"
+        }else{
+            codigo = "static "+tipoRetorno.getJavaCode()+" "+nombreFuncion.lexema+"("
+            if(listaParametros!!.isNotEmpty()) {
+                for (p in listaParametros!!) {
+                    codigo += p.getJavaCode() + ","
+                }
+                codigo = codigo.substring(0, codigo.length - 1)
+            }
+            codigo += "){"
+
+        }
+
+        for(s in listaSentencias){
+            codigo += s.getJavaCode()
+        }
+
+        codigo += "}"
+
+        return codigo
+    }
 }

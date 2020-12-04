@@ -75,4 +75,21 @@ class Decision():Sentencia() {
         }
     }
 
+    override fun getJavaCode(): String {
+        var codigo = "if("+expresionLogica!!.getJavaCode()+"){"
+        for(s in listaSentencia!!){
+            codigo += s.getJavaCode()
+        }
+        codigo += "}"
+        if(listaSentenciaAltro != null){
+            codigo += "else{ "
+            for(s in listaSentenciaAltro!!){
+                codigo += s.getJavaCode()
+            }
+            codigo += "}"
+        }
+
+        return codigo
+    }
+
 }

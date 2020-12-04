@@ -13,4 +13,7 @@ open class Expresion {
     open fun obtenerTipo(tabalSimbolos: TablaSimbolos, ambito: String):String{
         return ""
     }
+    open fun getJavaCode():String{
+        return ""
+    }
 }
