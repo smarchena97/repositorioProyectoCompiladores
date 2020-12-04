@@ -5,7 +5,7 @@ import co.edu.uniquindio.compiladores.lexico.Token
 import co.edu.uniquindio.compiladores.semantica.TablaSimbolos
 import javafx.scene.control.TreeItem
 
-class DeclaracionVariable(var tipoVariable:Token, var listaVariables:ArrayList<Token>, var tipoDato:Token):Sentencia() {
+class DeclaracionVariable(var tipoVariable:Token, var listaVariables:ArrayList<Variable>, var tipoDato:Token):Sentencia() {
     override fun toString(): String {
         return "DeclaracionVariable(tipoVariable=$tipoVariable, listaVariables=$listaVariables, tipoDato=$tipoDato)"
     }
@@ -14,7 +14,7 @@ class DeclaracionVariable(var tipoVariable:Token, var listaVariables:ArrayList<T
         var raiz = TreeItem<String>("Declaracion")
         raiz.children.add(TreeItem("tipoVariable: ${tipoVariable.lexema}"))
         for (i in listaVariables){
-            raiz.children.add(TreeItem("Variable: ${i.lexema}"))
+            raiz.children.add(TreeItem("Variable: ${i.nombreVariable.lexema}"))
         }
         raiz.children.add(TreeItem("tipoDato:${tipoDato.lexema}"))
         return raiz
@@ -22,7 +22,7 @@ class DeclaracionVariable(var tipoVariable:Token, var listaVariables:ArrayList<T
 
     override fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, listaErrores: ArrayList<Error>, ambito: String) {
         for (lv in listaVariables){
-            tablaSimbolos.guardarSimboloValor(lv.lexema, tipoDato.lexema , true, ambito, lv.fila, lv.columna)
+            tablaSimbolos.guardarSimboloValor(lv.nombreVariable.lexema, tipoDato.lexema , true, ambito, lv.nombreVariable.fila, lv.nombreVariable.columna)
         }
     }
 

@@ -19,4 +19,9 @@ class ValorNumerico(var signo:Token?, var valor:Token) {
         return raiz
     }
 
+    override fun toString(): String {
+        return "ValorNumerico(signo=$signo, valor=$valor)"
+    }
+
+
 }
