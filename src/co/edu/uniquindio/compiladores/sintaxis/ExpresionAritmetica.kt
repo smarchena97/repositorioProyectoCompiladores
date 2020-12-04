@@ -56,10 +56,10 @@ class ExpresionAritmetica():Expresion() {
     /**
      * Funcionamiento dudoso
      */
-    override fun obtenerTipo(tablaSimbolos: TablaSimbolos, ambito:String, listaErrores: ArrayList<Error>): String {
+    override fun obtenerTipo(tablaSimbolos: TablaSimbolos, ambito: String): String {
         if(expresion1 != null && expresion2!=null && valorNumerico==null){
-            val tipo1 =expresion1!!.obtenerTipo(tablaSimbolos,ambito, listaErrores)
-            val tipo2 =expresion2!!.obtenerTipo(tablaSimbolos,ambito, listaErrores)
+            val tipo1 =expresion1!!.obtenerTipo(tablaSimbolos, ambito)
+            val tipo2 =expresion2!!.obtenerTipo(tablaSimbolos, ambito)
 
             if(tipo1 == "numR" || tipo2 == "numR"){
                 return "numR"
@@ -68,12 +68,12 @@ class ExpresionAritmetica():Expresion() {
             }
         }
         else if(expresion1 != null ){
-            return expresion1!!.obtenerTipo(tablaSimbolos,ambito, listaErrores)
+            return expresion1!!.obtenerTipo(tablaSimbolos, ambito)
         }
         else if(valorNumerico != null && expresion1 != null ) {
 
-            var tipo1 = obtenerTipoCampo(valorNumerico,tablaSimbolos,ambito,listaErrores)
-            val tipo2 = expresion1!!.obtenerTipo(tablaSimbolos, ambito, listaErrores)
+            var tipo1 = obtenerTipoCampo(valorNumerico, tablaSimbolos,ambito)
+            val tipo2 = expresion1!!.obtenerTipo(tablaSimbolos, ambito)
 
             if (tipo1 == "numR" || tipo2 == "numR") {
                 return "numR"
@@ -82,12 +82,12 @@ class ExpresionAritmetica():Expresion() {
             }
 
         } else if(valorNumerico != null ) {
-            obtenerTipoCampo(valorNumerico, tablaSimbolos, ambito, listaErrores)
+            obtenerTipoCampo(valorNumerico, tablaSimbolos, ambito)
         }
         return ""
     }
 
-    fun obtenerTipoCampo(valorNumerico: ValorNumerico? , tablaSimbolos: TablaSimbolos, ambito:String, listaErrores: ArrayList<Error>):String
+    fun obtenerTipoCampo(valorNumerico: ValorNumerico? , tablaSimbolos: TablaSimbolos, ambito:String):String
     {
         if(valorNumerico!!.valor.categoria == Categoria.ENTERO ){
             return "numZ"
@@ -97,10 +97,31 @@ class ExpresionAritmetica():Expresion() {
             val simbolo = tablaSimbolos.buscarSimboloValor(valorNumerico!!.valor.lexema,ambito)
             if(simbolo != null){
                 return simbolo.tipo
-            }else{
-                listaErrores.add(Error("El campo ${valorNumerico!!.valor.lexema} no existe dentro del ambito $ambito", valorNumerico!!.valor.fila, valorNumerico!!.valor.columna))
             }
         }
         return ""
+    }
+    override fun analizarSemantica(tablaSimbolos: TablaSimbolos, listaErrores: ArrayList<Error>, ambito: String) {
+        if (valorNumerico != null) {
+            if (valorNumerico!!.valor.categoria == Categoria.IDENTIFICADOR)
+            {
+                var simbolo=tablaSimbolos.buscarSimboloValor(valorNumerico!!.valor.lexema, ambito)
+                if (simbolo == null){
+                    // capturar el simbolo.tipo y preguntar si es numerico
+                    listaErrores.add(
+                        Error( "El campo (${valorNumerico!!.valor.lexema}) no existe dentro del ambito ($ambito)",
+                        valorNumerico!!.valor.fila,
+                        valorNumerico!!.valor.columna
+                        )
+                    )
+                }
+            }
+        }
+        if (expresion1!=null) {
+            expresion1!!.analizarSemantica(tablaSimbolos, listaErrores, ambito)
+        }
+        if (expresion2!=null) {
+            expresion2!!.analizarSemantica(tablaSimbolos, listaErrores, ambito)
+        }
     }
 }

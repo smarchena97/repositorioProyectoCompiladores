@@ -25,4 +25,10 @@ class DeclaracionVariable(var tipoVariable:Token, var listaVariables:ArrayList<T
             tablaSimbolos.guardarSimboloValor(lv.lexema, tipoDato.lexema , true, ambito, lv.fila, lv.columna)
         }
     }
+
+    override fun analizarSemantica(tablaSimbolos: TablaSimbolos, listaErrores: ArrayList<Error>, ambito: String) {
+        /*for (v in listaVariables) {
+            analizarSemantica(tablaSimbolos, listaErrores, ambito)
+        }*/
+    }
 }

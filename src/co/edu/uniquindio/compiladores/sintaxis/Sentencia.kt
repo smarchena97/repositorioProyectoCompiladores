@@ -1,7 +1,6 @@
 package co.edu.uniquindio.compiladores.sintaxis
-
-import co.edu.uniquindio.compiladores.lexico.Error
 import co.edu.uniquindio.compiladores.semantica.TablaSimbolos
+import co.edu.uniquindio.compiladores.lexico.Error
 import javafx.scene.control.TreeItem
 
 open class Sentencia {

@@ -1,6 +1,5 @@
 package co.edu.uniquindio.compiladores.semantica
 import co.edu.uniquindio.compiladores.lexico.Error
-
 class TablaSimbolos(erroresSemanticos:ArrayList<Error>) {
     var listaSimbolos:ArrayList<Simbolo> = ArrayList()
     var listaError:ArrayList<Error> = erroresSemanticos
@@ -51,7 +50,7 @@ class TablaSimbolos(erroresSemanticos:ArrayList<Error>) {
     fun buscarSimboloFuncion(nombre:String,tiposParametros:ArrayList<String>):Simbolo?{
 
         for(s in listaSimbolos){
-            if(tiposParametros != null) {
+            if(s.tiposParametros != null) {
                 if (s.nombre == nombre && s.tiposParametros == tiposParametros) {
                     return s
                 }

@@ -33,6 +33,7 @@ class CicloMientras (var expresionLogica: ExpresionLogica, var listaSentencia: A
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, listaErrores: ArrayList<Error>, ambito: String) {
+        expresionLogica.analizarSemantica(tablaSimbolos, listaErrores, ambito)
         for (s in listaSentencia) {
             s.analizarSemantica(tablaSimbolos, listaErrores, ambito)
         }

@@ -39,7 +39,6 @@ class AnalizadorLexico (var codigoFuente:String) {
     fun almacenarToken(lexema:String, categoria: Categoria, fila:Int, columna:Int) = listaTokens.add( Token(lexema, categoria, fila, columna)  )
 
 
-
     fun hacerBT(posicionInicial:Int, filaInicial:Int, columnaInicial:Int){
 
         posicionActual = posicionInicial

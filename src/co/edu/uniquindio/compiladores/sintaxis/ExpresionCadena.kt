@@ -56,7 +56,13 @@ class ExpresionCadena():Expresion() {
         return raiz
     }
 
-    override fun obtenerTipo(tabalSimbolos: TablaSimbolos, ambito:String, listaErrores: ArrayList<Error>): String {
+    override fun obtenerTipo(tabalSimbolos: TablaSimbolos, ambito: String): String {
         return "chordi"
+    }
+
+    override fun analizarSemantica(tablaSimbolos: TablaSimbolos, listaErrores: ArrayList<Error>, ambito: String) {
+        if (expresionCadena != null) {
+            expresionCadena!!.analizarSemantica(tablaSimbolos, listaErrores, ambito)
+        }
     }
 }

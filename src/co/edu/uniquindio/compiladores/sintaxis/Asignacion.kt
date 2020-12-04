@@ -2,7 +2,6 @@ package co.edu.uniquindio.compiladores.sintaxis
 
 import co.edu.uniquindio.compiladores.lexico.Error
 import co.edu.uniquindio.compiladores.lexico.Token
-import co.edu.uniquindio.compiladores.semantica.AnalizadorSemantico
 import co.edu.uniquindio.compiladores.semantica.TablaSimbolos
 import javafx.scene.control.TreeItem
 
@@ -49,12 +48,16 @@ class Asignacion(var identificador:Token , var operadorAsignacion: Token):Senten
         }else {
             var tipo = s.tipo
             if (expresion != null) {
-                var tipoExp = expresion!!.obtenerTipo(tablaSimbolos, ambito, listaErrores)
+                expresion!!.analizarSemantica(tablaSimbolos, listaErrores, ambito)
+                var tipoExp = expresion!!.obtenerTipo(tablaSimbolos, ambito)
                 if ( tipoExp != tipo){
                     listaErrores.add(Error("El tipo de dato de la expresión ($tipoExp) no coincide con el tipo de dato del arreglo (${identificador.lexema}) la cual es $tipo", identificador.fila, identificador.columna))
                 }
+            }else if (invocacion!=null)
+            {
+                invocacion!!.analizarSemantica(tablaSimbolos, listaErrores, ambito)
+                //comprobar tipos
             }
-            //Falta validar el tipo de retorno de la invocación
         }
     }
 

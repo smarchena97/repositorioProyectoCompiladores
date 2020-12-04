@@ -5,7 +5,7 @@ import co.edu.uniquindio.compiladores.lexico.Token
 import co.edu.uniquindio.compiladores.semantica.TablaSimbolos
 import javafx.scene.control.TreeItem
 
-class Invocacion(var nombreFuncion: Token, var listaArgumentos: ArrayList<Argumento>?): Sentencia() {
+class Invocacion(var nombreFuncion: Token, var listaArgumentos: ArrayList<Expresion>?): Sentencia() {
 
     override fun toString(): String {
         return "Invocacion(nombreFuncion=$nombreFuncion, listaArgumentos=$listaArgumentos)"
@@ -24,7 +24,20 @@ class Invocacion(var nombreFuncion: Token, var listaArgumentos: ArrayList<Argume
         return  raiz
     }
 
-    override fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, listaErrores: ArrayList<Error>, ambito: String) {
+    fun obtenerTiposArgumentos (tablaSimbolos: TablaSimbolos, ambito: String):ArrayList<String>{
+        var listaArgs = ArrayList<String>()
+        for (a in listaArgumentos!!){
+            listaArgs.add( a.obtenerTipo(tablaSimbolos, ambito))
+        }
+        return listaArgs
+    }
+
+    override fun analizarSemantica(tablaSimbolos: TablaSimbolos, listaErrores: ArrayList<Error>, ambito: String) {
+        var listaTipoArgs= obtenerTiposArgumentos(tablaSimbolos, ambito)
+        var s= tablaSimbolos.buscarSimboloFuncion(nombreFuncion.lexema, listaTipoArgs)
+        if (s==null){
+            listaErrores.add( Error("la función ${nombreFuncion.lexema} $listaTipoArgs no existe", nombreFuncion.fila, nombreFuncion.columna))
+        }
     }
 
 

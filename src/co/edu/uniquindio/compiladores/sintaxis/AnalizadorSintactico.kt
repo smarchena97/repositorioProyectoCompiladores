@@ -2,6 +2,7 @@ package co.edu.uniquindio.compiladores.sintaxis
 
 import co.edu.uniquindio.compiladores.lexico.Categoria
 import co.edu.uniquindio.compiladores.lexico.Token
+import co.edu.uniquindio.compiladores.lexico.Error
 
 class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
 
@@ -312,12 +313,9 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
         if(e != null) {
             return e
         }
-
         e = esExpresionCadena()
-        if(e != null)
             return e
 
-        return e
     }
 
     /**
@@ -733,6 +731,7 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
     }
 
     /**
+     *
      * <Invocaciones> ::= nombreMetodo”(“<ListaArgumentos>”)”
      */
     fun esInvocacion(): Invocacion? {
@@ -745,13 +744,9 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
                 var listaArgumentos = esListaArgumentos()
 
                 if (tokenActual.categoria == Categoria.PARENTESIS_DER) {
-                    if (listaArgumentos != null) {
-                        obtenerSiguienteToken()
-                        return Invocacion(nombreMetodo, listaArgumentos)
+                    obtenerSiguienteToken()
+                    return Invocacion(nombreMetodo, listaArgumentos)
 
-                    } else {
-                        reportarError("Falta la invocacion")
-                    }
                 } else {
                     reportarError("Falta un parentisis derecho en la lista de parametros")
                 }
@@ -765,14 +760,13 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
     /**
      * <ListaArgumentos> ::= <Argumento>[","< ListaArgumentos>]
      */
-    fun esListaArgumentos(): ArrayList<Argumento> {
+    fun esListaArgumentos(): ArrayList<Expresion> {
 
-        var listaArgumentos = ArrayList<Argumento>()
+        var listaArgumentos = ArrayList<Expresion>()
         var argumento = esArgumento()
 
         while (argumento != null) {
             listaArgumentos.add(argumento)
-            obtenerSiguienteToken()
             if (tokenActual.categoria == Categoria.COMA) {
                 obtenerSiguienteToken()
                 argumento = esArgumento()
@@ -787,10 +781,11 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
     /**
      * <Argumento> ::= Identificador
      */
-    fun esArgumento(): Argumento? {
+    fun esArgumento(): Expresion? {
 
-        if (tokenActual.categoria == Categoria.IDENTIFICADOR) {
+        if ( tokenActual.categoria == Categoria.ENTERO || tokenActual.categoria == Categoria.CADENA || tokenActual.categoria == Categoria.DECIMAL ) {
             val nombre = tokenActual
+            obtenerSiguienteToken()
             return Argumento(nombre)
         } else {
             reportarError("Falta el nombre del Argumento")
@@ -860,16 +855,8 @@ class AnalizadorSintactico(var listaTokens:ArrayList<Token>) {
                                 obtenerSiguienteToken()
                                 if (tokenActual.categoria == Categoria.LLAVE_IZQ) {
                                     obtenerSiguienteToken()
-                                    var expresion = esExpresion()
-                                    while (expresion != null)
-                                    {
-                                        listaExpresiones.add(expresion)
-                                        if (tokenActual.categoria == Categoria.COMA) {
-                                            obtenerSiguienteToken()
-                                            expresion = esExpresion()
-                                        }
-                                        else{ break }
-                                    }
+                                    listaExpresiones = esListaArgumentos()
+
                                     if (tokenActual.categoria == Categoria.LLAVE_DER) {
                                         obtenerSiguienteToken()
                                     } else {

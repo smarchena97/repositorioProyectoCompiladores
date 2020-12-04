@@ -40,8 +40,18 @@ class ExpresionRelacional():Expresion() {
         return raiz
     }
 
-    override fun obtenerTipo(tabalSimbolos: TablaSimbolos, ambito:String, listaErrores: ArrayList<Error>): String {
+    override fun obtenerTipo(tabalSimbolos: TablaSimbolos, ambito: String): String {
         return "bool"
+    }
+
+    override fun analizarSemantica(tablaSimbolos: TablaSimbolos, listaErrores: ArrayList<Error>, ambito: String) {
+        if (expresionC1 != null && expresionC2 != null) {
+            expresionC1!!.analizarSemantica(tablaSimbolos, listaErrores, ambito)
+            expresionC2!!.analizarSemantica(tablaSimbolos, listaErrores, ambito)
+        }else if(expresionA1!=null && expresionA2!= null){
+            expresionA1!!.analizarSemantica(tablaSimbolos, listaErrores, ambito)
+            expresionA2!!.analizarSemantica(tablaSimbolos, listaErrores, ambito)
+        }
     }
 
 }

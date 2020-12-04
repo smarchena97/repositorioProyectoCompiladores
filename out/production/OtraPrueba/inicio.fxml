@@ -24,12 +24,24 @@
                         </TableView>
                     </content>
                 </Tab>
-                <Tab text="Errores">
+                <Tab text="Errores Sintacticos">
                     <TableView fx:id="tablaErrores">
                         <columns>
                             <TableColumn fx:id="mensajeError" text="Mensaje" />
                             <TableColumn fx:id="filaError" text="Fila" />
                             <TableColumn fx:id="columnaError" text="Columna" />
+                        </columns>
+                        <columnResizePolicy>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                        </columnResizePolicy>
+                    </TableView>
+                </Tab>
+                <Tab text="Errores Semanticos">
+                    <TableView fx:id="tablaErroresSemanticos">
+                        <columns>
+                            <TableColumn fx:id="mensajeErrorSemantico" text="Mensaje" />
+                            <TableColumn fx:id="filaErrorSemantico" text="Fila" />
+                            <TableColumn fx:id="columnaErrorSemantico" text="Columna" />
                         </columns>
                         <columnResizePolicy>
                             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

@@ -61,6 +61,10 @@ class Decision():Sentencia() {
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, listaErrores: ArrayList<Error>, ambito: String) {
+        if (expresionLogica!= null) {
+            expresionLogica!!.analizarSemantica(tablaSimbolos, listaErrores, ambito)
+        }
+
         for (s in listaSentencia!!) {
             s.analizarSemantica(tablaSimbolos, listaErrores, ambito)
         }

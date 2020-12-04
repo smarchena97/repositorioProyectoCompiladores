@@ -2,8 +2,8 @@ package co.edu.uniquindio.compiladores.controladores
 
 import co.edu.uniquindio.compiladores.lexico.AnalizadorLexico
 import co.edu.uniquindio.compiladores.lexico.Token
+import co.edu.uniquindio.compiladores.lexico.Error
 import co.edu.uniquindio.compiladores.semantica.AnalizadorSemantico
-import co.edu.uniquindio.compiladores.sintaxis.Error
 import co.edu.uniquindio.compiladores.sintaxis.AnalizadorSintactico
 import javafx.collections.FXCollections
 import javafx.event.ActionEvent
@@ -37,6 +37,12 @@ class InicioController: Initializable {
     @FXML lateinit var filaError:TableColumn<Error,Int>
     @FXML lateinit var columnaError:TableColumn<Error,Int>
 
+    @FXML lateinit var tablaErroresSemanticos:TableView<Error>
+
+    @FXML lateinit var mensajeErrorSemantico:TableColumn<Error,String>
+    @FXML lateinit var filaErrorSemantico:TableColumn<Error,Int>
+    @FXML lateinit var columnaErrorSemantico:TableColumn<Error,Int>
+
 
     @FXML lateinit var arbolVisual:TreeView<String>
 
@@ -52,6 +58,10 @@ class InicioController: Initializable {
         mensajeError.cellValueFactory = PropertyValueFactory("error")
         filaError.cellValueFactory = PropertyValueFactory("fila")
         columnaError.cellValueFactory = PropertyValueFactory("columna")
+
+        mensajeErrorSemantico.cellValueFactory = PropertyValueFactory("error")
+        filaErrorSemantico.cellValueFactory = PropertyValueFactory("fila")
+        columnaErrorSemantico.cellValueFactory = PropertyValueFactory("columna")
     }
 
     @FXML
@@ -77,9 +87,9 @@ class InicioController: Initializable {
                     arbolVisual.root = uc.getArbolVisual()
                     val semantica = AnalizadorSemantico(uc!!)
                     semantica.llenarTablaSimbolos()
-                    print(semantica.tablaSimbolos)
                     semantica.analizarSemantica()
-                    print(semantica.erroresSemanticos)
+                    tablaErroresSemanticos.items = FXCollections.observableArrayList(semantica.erroresSemanticos)
+                    print(semantica.tablaSimbolos)
                 }
             }else{
                 var alerta = Alert(Alert.AlertType.WARNING)
