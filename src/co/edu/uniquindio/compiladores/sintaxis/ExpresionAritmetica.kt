@@ -106,16 +106,19 @@ class ExpresionAritmetica():Expresion() {
             if (valorNumerico!!.valor.categoria == Categoria.IDENTIFICADOR)
             {
                 var simbolo=tablaSimbolos.buscarSimboloValor(valorNumerico!!.valor.lexema, ambito)
-                if (simbolo == null){
-                    //if(simbolo.tipo == Categoria.ENTERO.name)
-                    // capturar el simbolo.tipo y preguntar si es numerico
-                    listaErrores.add(
-                        Error( "El campo (${valorNumerico!!.valor.lexema}) no existe dentro del ambito ($ambito)",
-                        valorNumerico!!.valor.fila,
-                        valorNumerico!!.valor.columna
+
+                if (simbolo != null){
+
+                        listaErrores.add(
+                                Error("El campo (${valorNumerico!!.valor.lexema}) no existe dentro del ambito ($ambito)",
+                                        valorNumerico!!.valor.fila,
+                                        valorNumerico!!.valor.columna
+                                )
                         )
-                    )
+                    
                 }
+
+
             }
         }
         if (expresion1!=null) {

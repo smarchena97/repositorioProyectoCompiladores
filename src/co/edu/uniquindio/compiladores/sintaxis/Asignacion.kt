@@ -53,6 +53,7 @@ class Asignacion(var identificador:Token , var operadorAsignacion: Token):Senten
                 if ( tipoExp != tipo){
                     listaErrores.add(Error("El tipo de dato de la expresión ($tipoExp) no coincide con el tipo de dato del arreglo (${identificador.lexema}) la cual es $tipo", identificador.fila, identificador.columna))
                 }
+
             }else if (invocacion!=null)
             {
                 invocacion!!.analizarSemantica(tablaSimbolos, listaErrores, ambito)

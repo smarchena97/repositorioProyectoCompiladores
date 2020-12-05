@@ -550,7 +550,7 @@ class AnalizadorSintactico(var listaTokens: ArrayList<Token>) {
                         obtenerSiguienteToken()
                         if (tokenActual.categoria == Categoria.FINDESENTENCIA) {
                             obtenerSiguienteToken()
-                            return DeclaracionVariable(tipoVariable, listaIdentificadores, tipoDato, asignacion)
+                            return DeclaracionVariable(tipoVariable, listaIdentificadores, tipoDato, null)
                         }
                     }
                 } else {
@@ -656,31 +656,19 @@ class AnalizadorSintactico(var listaTokens: ArrayList<Token>) {
     [<ExpresionRelacional>]”)”
      */
     fun esImpresion():Impresion?{
-        if(tokenActual.categoria == Categoria.PALABRA_RESERVADA){
-            if (tokenActual.lexema == "println"){
+        if(tokenActual.categoria == Categoria.PALABRA_RESERVADA && tokenActual.lexema == "println"){
+            obtenerSiguienteToken()
+            if(tokenActual.categoria == Categoria.PARENTESIS_IZQ){
                 obtenerSiguienteToken()
-                if(tokenActual.categoria == Categoria.PARENTESIS_IZQ){
-                    obtenerSiguienteToken()
-                    val posicionA= posicionActual
-                    val exp = esExpresion()
-                    if(exp != null  ){
-
-                        if(tokenActual.categoria == Categoria.PARENTESIS_DER){
-
-                            obtenerSiguienteToken()
-                            return  Impresion(exp)
-                        }
-                    }else{
-                        hacerBT(posicionA)
-                        if(tokenActual.categoria == Categoria.IDENTIFICADOR || tokenActual.categoria == Categoria.CADENA){
-                            var cadena = tokenActual
-                            obtenerSiguienteToken()
-                            if(tokenActual.categoria == Categoria.PARENTESIS_DER){
-                                obtenerSiguienteToken()
-                                return  Impresion(cadena)
-                            }
-                        }
+                val posicionA= posicionActual
+                val exp = esExpresion()
+                if(exp != null  ){
+                    if(tokenActual.categoria == Categoria.PARENTESIS_DER){
+                        obtenerSiguienteToken()
+                        return  Impresion(exp)
                     }
+                }else{
+                    reportarError("Falta la expresión a imprimir")
                 }
             }
         }
